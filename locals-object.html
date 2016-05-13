@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="locals-objectlayer.html">
 
 <!--
@@ -46,28 +47,34 @@ Example:
         border: 1px solid red; 
       }
 
+      .editbnts {
+        z-index: 100;
+      }
+
 
     </style>
 
 
   <template is="dom-if" if="{{isMode(mode,'edit')}}">
-    <button>show controls</button>
+  <div class="absolutepos editbnts">
+    <button on-tap="prev">PREV</button>
+    <button on-tap="next">NEXT</button>
+  </div>
+  </template>
+
+  <template is="dom-repeat" items="{{config.layers}}" >
+    <div class="absolutepos" on-tap="toEdit">
+    <locals-objectlayer options="[[item.options]]" selected="[[arrayItem(config.objectconfig.*,index)]]" editmode="[[isMode(mode,'edit')]]"></locals-objectlayer>
+    </div>
+  </template>
+
+  <template is="dom-if" if="{{isMode(mode,'edit')}}">
     Selected layer : {{selectedlayer}}
     <template is="dom-repeat" items="{{config.layers}}" >
       <div on-tap="selectlayer" ikke="{{index}}">{{item.name}}</div>
     </template>
-    <button on-tap="prev">PREV</button>
-    <button on-tap="next">NEXT</button>
   </template>
-    <button on-tap="toEdit">to edit</button>
 
-  <template is="dom-repeat" items="{{config.layers}}" >
-    <div class="absolutepos">
-
-    <locals-objectlayer options="[[item.options]]" selected="[[arrayItem(config.objectconfig.*,index)]]" editmode="[[isMode(mode,'edit')]]"></locals-objectlayer>
-    </div>
-
-  </template>
 </template>
 
 <script>
