@@ -31,15 +31,20 @@ Example:
       :host {
         display: block;
         box-sizing: border-box;
+        position: relative;
+
       }
 
-
+      .canvas {
+         width: 400px;
+        height: 400px;  
+      }
+      
       .absolutepos {
         position: absolute;
-        width: 400px;
-        height: 400px;        
+         width: 400px;
+        height: 400px;  
       }
-
 
       locals-objectlayer {
         width: 100%;
@@ -48,7 +53,11 @@ Example:
       }
 
       .editbnts {
-        z-index: 100;
+        z-index: 10;
+      }
+
+      .layerselector {
+
       }
 
 
@@ -62,18 +71,21 @@ Example:
   </div>
   </template>
 
+  <div class="canvas" on-tap="toEdit">
   <template is="dom-repeat" items="{{config.layers}}" >
-    <div class="absolutepos" on-tap="toEdit">
+    <div class="absolutepos">
     <locals-objectlayer options="[[item.options]]" selected="[[arrayItem(config.objectconfig.*,index)]]" editmode="[[isMode(mode,'edit')]]"></locals-objectlayer>
     </div>
   </template>
+  </div>
 
+  <div class="layerselector">
   <template is="dom-if" if="{{isMode(mode,'edit')}}">
-    Selected layer : {{selectedlayer}}
     <template is="dom-repeat" items="{{config.layers}}" >
-      <div on-tap="selectlayer" ikke="{{index}}">{{item.name}}</div>
+      <button on-tap="selectlayer" data-args$="{{index}}">{{item.name}}</button>
     </template>
   </template>
+    </div>
 
 </template>
 
@@ -115,9 +127,29 @@ Example:
         // },2000)
       },
 
-      selectlayer: function(event){
-        console.log(event);
-        this.selectedlayer = event.details.index;
+      selectlayer: function(e){
+        this.selectedlayer = e.target.getAttribute('data-args');
+      },
+
+      prev: function(){
+        console.log('Selected layer=',this.selectedlayer);
+        console.log('currect value =',this.config.objectconfig[this.selectedlayer]);
+        console.log('layer options count=',this.config.layers[this.selectedlayer].options.length);
+        if (this.config.objectconfig[this.selectedlayer] == 0){
+          this.set('config.objectconfig.'+ this.selectedlayer, this.config.layers[this.selectedlayer].options.length -1);
+        }else{
+          this.set('config.objectconfig.'+ this.selectedlayer,this.config.objectconfig[this.selectedlayer]-1);
+        }
+        console.log('new value=',this.config.objectconfig[this.selectedlayer]);
+      },
+      next: function(){
+         
+        if (this.config.objectconfig[this.selectedlayer] == this.config.layers[this.selectedlayer].options.length-1){
+          this.set('config.objectconfig.'+ this.selectedlayer, 0);
+        }else{
+          this.set('config.objectconfig.'+ this.selectedlayer,this.config.objectconfig[this.selectedlayer]+1);
+        }
+console.log('new value=',this.config.objectconfig[this.selectedlayer]);
       },
 
       detached: function() {
