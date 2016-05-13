@@ -68,32 +68,32 @@ Example:
 
     </style>
 
-
   <template is="dom-if" if="{{isMode(mode,'edit')}}">
-  <div class="absolutepos editbnts">
-    <button on-tap="prev">PREV</button>
-    <button on-tap="next">NEXT</button>
-  </div>
+    <div class="absolutepos editbnts">
+      <button on-tap="prev">PREV</button>
+      <button on-tap="next">NEXT</button>
+    </div>
   </template>
 
   <div class="canvas" on-tap="toEdit">
-  <template is="dom-repeat" items="{{config.layers}}" >
-    <div class="absolutepos">
-    <locals-objectlayer options="[[item.options]]" selected="[[arrayItem(config.objectconfig.*,index)]]" editmode="[[isMode(mode,'edit')]]"></locals-objectlayer>
-    </div>
-  </template>
+    <template is="dom-repeat" items="{{config.layers}}" >
+      <div class="absolutepos">
+        <locals-objectlayer options="[[item.options]]" selected="[[arrayItem(config.objectconfig.*,index)]]" editmode="[[isMode(mode,'edit')]]"></locals-objectlayer>
+      </div>
+    </template>
   </div>
 
   <div class="layerselector">
-  <template is="dom-if" if="{{isMode(mode,'edit')}}">
-
-  <iron-selector selected="{{selectedlayer}}">  
-    <template is="dom-repeat" items="{{config.layers}}" >
-      <div on-tap="selectlayer" data-args$="{{index}}">{{item.name}}</div>
+    <template is="dom-if" if="{{isMode(mode,'edit')}}">
+      <template is="dom-if" if="{{multilayer}}">
+        <iron-selector selected="{{selectedlayer}}">
+          <template is="dom-repeat" items="{{config.layers}}" >
+            <div on-tap="selectlayer" data-args$="{{index}}">{{item.name}}</div>
+          </template>
+        </iron-selector>
+      </template>
     </template>
-  </iron-selector>
-  </template>
-    </div>
+  </div>
 
 </template>
 
@@ -118,9 +118,7 @@ Example:
           type: Number,
           value :0
         }
-
       },
-
 
       arrayItem: function(change, index) {
         return change.base[index];
@@ -132,6 +130,7 @@ Example:
       },
 
       attached: function() {
+        this.multilayer = this.config.layers.length > 1;
       },
 
       // select a different layer
@@ -146,7 +145,6 @@ Example:
         } else {
           this.set('config.objectconfig.' + this.selectedlayer, this.config.objectconfig[this.selectedlayer] - 1);
         }
-        console.log('new value=', this.config.objectconfig[this.selectedlayer]);
       },
 
       // select next item in current layer, rolls around if you're at the end
