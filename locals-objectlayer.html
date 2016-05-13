@@ -44,15 +44,25 @@ Example:
       }
     </style>
 
-    <div>NEN obkect layer</div>
-      <template is="dom-repeat" items="{{options}}" >
+    <template is="dom-if" if="{{!editmode}}">
+      <h1>{{getTile(selected)}}</h1>
+    </template>
 
+    <template is="dom-if" if="{{editmode}}">
+    <template is="dom-repeat" items="{{options}}">
+    <p>{{item.tile}}</p>
+      
+    </template>
+<!--       <template is="dom-repeat" items="{{options}}" >
         <div>{{index}} / {{selected}} = {{item.name}} - {{item.tile}}</div>
         <template is="dom-if" if="{{_eq(index,selected)}}">
         DIT ISSEM
         </template>
-      </template>      
-  
+      </template>   -->    
+    </template>
+
+
+
   </template>
 
   <script>
@@ -65,6 +75,11 @@ Example:
         },
         selected: {
           type: Number
+        },
+
+        editmode: {
+          type: Boolean,
+          value: false
         }
 
       },
@@ -91,14 +106,16 @@ Example:
         // This is a good place to perform any work related to your element's
         // visual state or active behavior (measuring sizes, beginning animations,
         // loading resources, etc).
-        var self = this;
-        setInterval(function(){
-          self.selected++;
-          console.log('length=',Object.keys(self.options).length);
-          if (self.selected >= Object.keys(self.options).length){
-            self.selected = 0;
-          }
-        },1000)
+
+
+        // var self = this;
+        // setInterval(function(){
+        //   self.selected++;
+        //   console.log('length=',Object.keys(self.options).length);
+        //   if (self.selected >= Object.keys(self.options).length){
+        //     self.selected = 0;
+        //   }
+        // },1000)
       },
 
       detached: function() {
@@ -108,7 +125,9 @@ Example:
         // Use this to clean up anything you did in `attached`.
       },
 
-      // Element Behavior
+      getTile: function(selected){
+        return this.options[selected].tile;
+      }
 
     
     });
