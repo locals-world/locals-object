@@ -10,7 +10,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../locals-icon/locals-icon.html">
+
 <link rel="import" href="locals-objectlayer.html">
+
 
 <!--
 An element providing a solution to no problem in particular.
@@ -33,31 +36,55 @@ Example:
         box-sizing: border-box;
         position: relative;
 
+        --obj-size:400px;
+
       }
 
       .canvas {
-         width: 400px;
-        height: 400px;  
+        width: var(--obj-size);
+        height: var(--obj-size);  
       }
       
       .absolutepos {
         position: absolute;
-         width: 400px;
-        height: 400px;  
+        width: var(--obj-size);
+        height: var(--obj-size);  
       }
 
       locals-objectlayer {
         width: 100%;
         height: 100%;
-        border: 1px solid red; 
       }
 
-      .editbnts {
+      .editbtns {
         z-index: 10;
+        width: var(--obj-size);
+        height: var(--obj-size);  
+        @apply(--layout-horizontal);
       }
 
-      .layerselector {
+      .editbtn {
+        width: 50%;
+        height: 100%;
+      }
 
+      .left {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+
+      .right {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        @apply(--layout-end-justified);
+      }
+
+
+      locals-icon {
+        background-color: rgba(0,0,0,0.05);
+        border-radius: 50%;
+        box-sizing: border-box;
+        padding: 10px;
       }
 
 
@@ -65,16 +92,23 @@ Example:
 
 
   <template is="dom-if" if="{{isMode(mode,'edit')}}">
-  <div class="absolutepos editbnts">
-    <button on-tap="prev">PREV</button>
-    <button on-tap="next">NEXT</button>
+  <div class="absolutepos editbtns">
+  <div class="editbtn left">
+  <locals-icon iconcolor="darkgrey" on-tap="prev" icon="arrowleft"></locals-icon>
+  </div>
+  <div class="editbtn right">
+  <locals-icon iconcolor="darkgrey" on-tap="next" icon="arrowright"></locals-icon>
+  </div>
+
+<!--     <button >PREV</button>
+    <button >NEXT</button> -->
   </div>
   </template>
 
   <div class="canvas" on-tap="toEdit">
   <template is="dom-repeat" items="{{config.layers}}" >
     <div class="absolutepos">
-    <locals-objectlayer options="[[item.options]]" selected="[[arrayItem(config.objectconfig.*,index)]]" editmode="[[isMode(mode,'edit')]]"></locals-objectlayer>
+    <locals-objectlayer options="[[item.options]]" selected="[[arrayItem(config.objectconfig.*,index)]]" editmode="[[isMode(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
     </div>
   </template>
   </div>
@@ -132,6 +166,9 @@ Example:
       },
 
       prev: function(){
+        this.inanimation = 'slide-from-right-animation';
+        this.outanimation = 'slide-left-animation';
+
         console.log('Selected layer=',this.selectedlayer);
         console.log('currect value =',this.config.objectconfig[this.selectedlayer]);
         console.log('layer options count=',this.config.layers[this.selectedlayer].options.length);
@@ -143,7 +180,9 @@ Example:
         console.log('new value=',this.config.objectconfig[this.selectedlayer]);
       },
       next: function(){
-         
+        this.inanimation = 'slide-from-left-animation';
+        this.outanimation = 'slide-right-animation';
+
         if (this.config.objectconfig[this.selectedlayer] == this.config.layers[this.selectedlayer].options.length-1){
           this.set('config.objectconfig.'+ this.selectedlayer, 0);
         }else{
