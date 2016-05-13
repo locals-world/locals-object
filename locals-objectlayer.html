@@ -39,16 +39,14 @@ Example:
     </style>
 
     <template is="dom-if" if="{{!editmode}}">
-      <h1>{{getTile(selected)}}</h1>
+    <img src="{{getTile(selected)}}">
     </template>
 
     <template is="dom-if" if="{{editmode}}">
       <neon-animated-pages selected="{{selected}}" entry-animation="{{entryAnimation}}" exit-animation="{{exitAnimation}}">
         <template is="dom-repeat" items="{{options}}">
           <neon-animatable>
-          <div class="in">
-          <p>{{item.tile}}</p>
-          </div>
+          <img src="{{item.tile}}">
           </neon-animatable>
         </template>
       </neon-animated-pages>
