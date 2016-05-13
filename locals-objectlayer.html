@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../neon-animation/neon-animation.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -35,13 +36,6 @@ Example:
         box-sizing: border-box;
       }
 
-      .author img {
-        display: block;
-        float: left;
-        margin-right: 5px;
-        max-height: 100px;
-        max-width: 100px;
-      }
     </style>
 
     <template is="dom-if" if="{{!editmode}}">
@@ -49,10 +43,16 @@ Example:
     </template>
 
     <template is="dom-if" if="{{editmode}}">
-    <template is="dom-repeat" items="{{options}}">
-    <p>{{item.tile}}</p>
-      
-    </template>
+      <neon-animated-pages selected="{{selected}}" entry-animation="{{entryAnimation}}" exit-animation="{{exitAnimation}}">
+        <template is="dom-repeat" items="{{options}}">
+          <neon-animatable>
+          <div class="in">
+          <p>{{item.tile}}</p>
+          </div>
+          </neon-animatable>
+        </template>
+      </neon-animated-pages>
+
 <!--       <template is="dom-repeat" items="{{options}}" >
         <div>{{index}} / {{selected}} = {{item.name}} - {{item.tile}}</div>
         <template is="dom-if" if="{{_eq(index,selected)}}">
@@ -100,6 +100,8 @@ Example:
       },
 
       attached: function() {
+        this.entryAnimation = "slide-from-left-animation";
+        this.exitAnimation = "slide-right-animation";
         // `attached` fires once the element and its parents have been inserted
         // into a document.
         //
