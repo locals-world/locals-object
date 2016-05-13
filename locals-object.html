@@ -17,20 +17,16 @@ An element providing a solution to no problem in particular.
 Example:
 
     <locals-object></locals-object>
-
 Example:
-
-    <locals-object>
-      <h2>Hello locals-object</h2>
-    </locals-object>
-
+<locals-object>
+<h2>Hello locals-object</h2>
+</locals-object>
 @demo demo/index.html
 @hero hero.svg
 -->
-
 <dom-module id="locals-object">
-  <template>
-    <style>
+<template>
+  <style>
       :host {
         display: block;
         box-sizing: border-box;
@@ -53,19 +49,28 @@ Example:
 
     </style>
 
-    <template is="dom-if" if="{{isMode(mode,'edit')}}">
-      <button>show controls</button>
+
+  <template is="dom-if" if="{{isMode(mode,'edit')}}">
+    <button>show controls</button>
+    Selected layer : {{selectedlayer}}
+    <template is="dom-repeat" items="{{config.layers}}" >
+      <div on-tap="selectlayer" ikke="{{index}}">{{item.name}}</div>
     </template>
+    <button on-tap="prev">PREV</button>
+    <button on-tap="next">NEXT</button>
+  </template>
     <button on-tap="toEdit">to edit</button>
 
-    <template is="dom-repeat" items="{{config.layers}}" >
+  <template is="dom-repeat" items="{{config.layers}}" >
     <div class="absolutepos">
-      <locals-objectlayer id="layer_{{index}}" options="{{item.options}}" selected="{{_getconfigindex(index)}}" editmode="{{isMode(mode,'edit')}}"></locals-objectlayer>
+
+    <locals-objectlayer options="[[item.options]]" selected="[[arrayItem(config.objectconfig.*,index)]]" editmode="[[isMode(mode,'edit')]]"></locals-objectlayer>
     </div>
-    </template>   
 
   </template>
-  <script>
+</template>
+
+<script>
     Polymer({
       is: 'locals-object',
 
@@ -85,17 +90,9 @@ Example:
 
       },
 
-      observers: [
-        'setconfigUpdate(config.objectconfig.splices)'
-      ],
 
-      _getconfigindex: function(index){
-        //onsole.log('f called');
-        return this.config.objectconfig[index];
-      },
-      setconfigUpdate: function(changeRecord){
-        console.log('setconfigUpdate',changeRecord);
-
+      arrayItem: function(change, index) {
+        return change.base[index];
       },
 
       // Element Lifecycle
@@ -104,7 +101,16 @@ Example:
       },
 
       attached: function() {
+        var self = this;
+        setTimeout(function(){
+          console.log('change it');
+          self.set('config.objectconfig.0',0);
+        },2000)
+      },
 
+      selectlayer: function(event){
+        console.log(event);
+        this.selectedlayer = event.details.index;
       },
 
       detached: function() {
