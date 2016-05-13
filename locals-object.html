@@ -68,25 +68,25 @@ Example:
 
     </style>
 
-  <template is="dom-if" if="{{isMode(mode,'edit')}}">
+  <template is="dom-if" if="{{_isMode(mode,'edit')}}">
     <div class="absolutepos editbnts">
       <button on-tap="prev">PREV</button>
       <button on-tap="next">NEXT</button>
     </div>
   </template>
 
-  <div class="canvas" on-tap="toEdit">
+  <div class="canvas" on-tap="_toEdit">
     <template is="dom-repeat" items="{{config.layers}}" >
       <div class="absolutepos">
-        <locals-objectlayer options="[[item.options]]" selected="[[arrayItem(config.objectconfig.*,index)]]" editmode="[[isMode(mode,'edit')]]"></locals-objectlayer>
+        <locals-objectlayer options="[[item.options]]" selected="[[_arrayItem(config.objectconfig.*,index)]]" editmode="[[_isMode(mode,'edit')]]"></locals-objectlayer>
       </div>
     </template>
   </div>
 
   <div class="layerselector">
-    <template is="dom-if" if="{{isMode(mode,'edit')}}">
+    <template is="dom-if" if="{{_isMode(mode,'edit')}}">
       <template is="dom-if" if="{{multilayer}}">
-        <iron-selector selected="{{selectedlayer}}">
+        <iron-selector selected="{{_selectedlayer}}">
           <template is="dom-repeat" items="{{config.layers}}" >
             <div on-tap="selectlayer" data-args$="{{index}}">{{item.name}}</div>
           </template>
@@ -103,24 +103,25 @@ Example:
 
       properties: {
         /**
-         * `fancy` indicates that the element should don a monocle and tophat,
-         * while checking its pocket watch.
+         * `config` is the internal configuration and state of the object
          */
         config: {
           type: Object,
           notify: true
         },
+        // `mode` is either 'view' or 'edit'
         mode: {
           type:String,
           value: "view"
         },
-        selectedlayer: {
+
+        _selectedlayer: {
           type: Number,
           value :0
         }
       },
 
-      arrayItem: function(change, index) {
+      _arrayItem: function(change, index) {
         return change.base[index];
       },
 
@@ -135,35 +136,35 @@ Example:
 
       // select a different layer
       selectlayer: function(e){
-        this.selectedlayer = e.target.getAttribute('data-args');
+        this._selectedlayer = e.target.getAttribute('data-args');
       },
 
       // select previous item in current layer, rolls around if you're at the beginning
       prev: function() {
-        if (this.config.objectconfig[this.selectedlayer] == 0) {
-          this.set('config.objectconfig.' + this.selectedlayer, this.config.layers[this.selectedlayer].options.length - 1);
+        if (this.config.objectconfig[this._selectedlayer] == 0) {
+          this.set('config.objectconfig.' + this._selectedlayer, this.config.layers[this._selectedlayer].options.length - 1);
         } else {
-          this.set('config.objectconfig.' + this.selectedlayer, this.config.objectconfig[this.selectedlayer] - 1);
+          this.set('config.objectconfig.' + this._selectedlayer, this.config.objectconfig[this._selectedlayer] - 1);
         }
       },
 
       // select next item in current layer, rolls around if you're at the end
       next: function() {
-        if (this.config.objectconfig[this.selectedlayer] == this.config.layers[this.selectedlayer].options.length - 1) {
-          this.set('config.objectconfig.' + this.selectedlayer, 0);
+        if (this.config.objectconfig[this._selectedlayer] == this.config.layers[this._selectedlayer].options.length - 1) {
+          this.set('config.objectconfig.' + this._selectedlayer, 0);
         } else {
-          this.set('config.objectconfig.' + this.selectedlayer, this.config.objectconfig[this.selectedlayer] + 1);
+          this.set('config.objectconfig.' + this._selectedlayer, this.config.objectconfig[this._selectedlayer] + 1);
         }
       },
 
       detached: function() {
       },
 
-      isMode: function(a,b){
+      _isMode: function(a,b){
         return a==b;
       },
 
-      toEdit: function(){
+      _toEdit: function(){
         this.mode = "edit";
       }
 
