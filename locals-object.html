@@ -54,7 +54,7 @@ Example:
     <button>show controls</button>
     Selected layer : {{selectedlayer}}
     <template is="dom-repeat" items="{{config.layers}}" >
-      <div on-tap="selectlayer" ikke="{{index}}">{{item.name}}</div>
+      <div on-tap="selectlayer" data-args$="{{index}}">{{item.name}}</div>
     </template>
     <button on-tap="prev">PREV</button>
     <button on-tap="next">NEXT</button>
@@ -108,9 +108,29 @@ Example:
         },2000)
       },
 
-      selectlayer: function(event){
-        console.log(event);
-        this.selectedlayer = event.details.index;
+      selectlayer: function(e){
+        this.selectedlayer = e.target.getAttribute('data-args');
+      },
+
+      prev: function(){
+        console.log('Selected layer=',this.selectedlayer);
+        console.log('currect value =',this.config.objectconfig[this.selectedlayer]);
+        console.log('layer options count=',this.config.layers[this.selectedlayer].options.length);
+        if (this.config.objectconfig[this.selectedlayer] == 0){
+          this.set('config.objectconfig.'+ this.selectedlayer, this.config.layers[this.selectedlayer].options.length -1);
+        }else{
+          this.set('config.objectconfig.'+ this.selectedlayer,this.config.objectconfig[this.selectedlayer]-1);
+        }
+        console.log('new value=',this.config.objectconfig[this.selectedlayer]);
+      },
+      next: function(){
+         
+        if (this.config.objectconfig[this.selectedlayer] == this.config.layers[this.selectedlayer].options.length-1){
+          this.set('config.objectconfig.'+ this.selectedlayer, 0);
+        }else{
+          this.set('config.objectconfig.'+ this.selectedlayer,this.config.objectconfig[this.selectedlayer]+1);
+        }
+console.log('new value=',this.config.objectconfig[this.selectedlayer]);
       },
 
       detached: function() {
