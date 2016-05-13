@@ -10,10 +10,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../iron-selector/iron-selector.html">
-<link rel="import" href="locals-objectlayer.html">
+<<<<<<< HEAD
+<link rel="import" href="../locals-icon/locals-icon.html">
+  =======
+  <link rel="import" href="../iron-selector/iron-selector.html">
+  >>>>>>> 6e031ffb7934180ab73e7c3484b0d0cd27a5c919
+  <link rel="import" href="locals-objectlayer.html">
 
-<!--
+  <!--
 An element providing a solution to no problem in particular.
 
 Example:
@@ -21,44 +25,68 @@ Example:
     <locals-object></locals-object>
 Example:
 <locals-object>
-<h2>Hello locals-object</h2>
+  <h2>Hello locals-object</h2>
 </locals-object>
 @demo demo/index.html
 @hero hero.svg
 -->
 <dom-module id="locals-object">
-<template>
-  <style>
+  <template>
+    <style>
       :host {
         display: block;
         box-sizing: border-box;
         position: relative;
 
+        --obj-size:400px;
+
       }
 
       .canvas {
-         width: 400px;
-        height: 400px;  
+        width: var(--obj-size);
+        height: var(--obj-size);  
       }
       
       .absolutepos {
         position: absolute;
-         width: 400px;
-        height: 400px;  
+        width: var(--obj-size);
+        height: var(--obj-size);  
       }
 
       locals-objectlayer {
         width: 100%;
         height: 100%;
-        border: 1px solid red; 
       }
 
-      .editbnts {
+      .editbtns {
         z-index: 10;
+        width: var(--obj-size);
+        height: var(--obj-size);  
+        @apply(--layout-horizontal);
       }
 
-      .layerselector {
+      .editbtn {
+        width: 50%;
+        height: 100%;
+      }
 
+      .left {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+
+      .right {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        @apply(--layout-end-justified);
+      }
+
+
+      locals-icon {
+        background-color: rgba(0,0,0,0.05);
+        border-radius: 50%;
+        box-sizing: border-box;
+        padding: 10px;
       }
 
       .iron-selected {
@@ -68,17 +96,21 @@ Example:
 
     </style>
 
-  <template is="dom-if" if="{{_isMode(mode,'edit')}}">
-    <div class="absolutepos editbnts">
-      <button on-tap="prev">PREV</button>
-      <button on-tap="next">NEXT</button>
-    </div>
+    <template is="dom-if" if="{{isMode(mode,'edit')}}">
+      <div class="absolutepos editbtns">
+        <div class="editbtn left">
+          <locals-icon iconcolor="darkgrey" on-tap="prev" icon="arrowleft"></locals-icon>
+        </div>
+        <div class="editbtn right">
+          <locals-icon iconcolor="darkgrey" on-tap="next" icon="arrowright"></locals-icon>
+        </div>
+      </div>
   </template>
 
-  <div class="canvas" on-tap="_toEdit">
+  <div class="canvas" on-tap="toEdit">
     <template is="dom-repeat" items="{{config.layers}}" >
       <div class="absolutepos">
-        <locals-objectlayer options="[[item.options]]" selected="[[_arrayItem(config.objectconfig.*,index)]]" editmode="[[_isMode(mode,'edit')]]"></locals-objectlayer>
+        <locals-objectlayer options="[[item.options]]" selected="[[arrayItem(config.objectconfig.*,index)]]" editmode="[[isMode(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
       </div>
     </template>
   </div>
@@ -139,19 +171,36 @@ Example:
         this._selectedlayer = e.target.getAttribute('data-args');
       },
 
+<<<<<<< HEAD
       // select previous item in current layer, rolls around if you're at the beginning
       prev: function() {
         if (this.config.objectconfig[this._selectedlayer] == 0) {
           this.set('config.objectconfig.' + this._selectedlayer, this.config.layers[this._selectedlayer].options.length - 1);
+=======
+      prev: function(){
+        this.inanimation = 'slide-from-right-animation';
+        this.outanimation = 'slide-left-animation';
+
+        if (this.config.objectconfig[this.selectedlayer] == 0) {
+          this.set('config.objectconfig.' + this.selectedlayer, this.config.layers[this.selectedlayer].options.length - 1);
+>>>>>>> d8947c86ea9111cf6930623b3f6b2cad3d2a8b06
         } else {
           this.set('config.objectconfig.' + this._selectedlayer, this.config.objectconfig[this._selectedlayer] - 1);
         }
       },
+      next: function(){
+        this.inanimation = 'slide-from-left-animation';
+        this.outanimation = 'slide-right-animation';
 
+<<<<<<< HEAD
       // select next item in current layer, rolls around if you're at the end
       next: function() {
         if (this.config.objectconfig[this._selectedlayer] == this.config.layers[this._selectedlayer].options.length - 1) {
           this.set('config.objectconfig.' + this._selectedlayer, 0);
+=======
+        if (this.config.objectconfig[this.selectedlayer] == this.config.layers[this.selectedlayer].options.length - 1) {
+          this.set('config.objectconfig.' + this.selectedlayer, 0);
+>>>>>>> d8947c86ea9111cf6930623b3f6b2cad3d2a8b06
         } else {
           this.set('config.objectconfig.' + this._selectedlayer, this.config.objectconfig[this._selectedlayer] + 1);
         }

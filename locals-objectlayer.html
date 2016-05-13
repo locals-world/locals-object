@@ -36,6 +36,11 @@ Example:
         box-sizing: border-box;
       }
 
+/*      img {
+        width: 100%;
+        height: 100%;
+      }*/
+
     </style>
 
     <template is="dom-if" if="{{!editmode}}">
@@ -43,7 +48,7 @@ Example:
     </template>
 
     <template is="dom-if" if="{{editmode}}">
-      <neon-animated-pages selected="{{selected}}" entry-animation="{{entryAnimation}}" exit-animation="{{exitAnimation}}">
+      <neon-animated-pages selected="{{selected}}" entry-animation="{{inanimation}}" exit-animation="{{outanimation}}">
         <template is="dom-repeat" items="{{options}}">
           <neon-animatable>
           <img src="{{item.tile}}">
@@ -78,7 +83,21 @@ Example:
         editmode: {
           type: Boolean,
           value: false
-        }
+        },
+
+        inanimation: {
+          type: String,
+          value: 'slide-from-left-animation',
+          observer: '_inanimation'
+        },
+
+        outanimation: {
+          type: String,
+          value: 'slide-right-animation',
+          observer: '_outanimation'
+
+        },
+
 
       },
 
@@ -98,8 +117,6 @@ Example:
       },
 
       attached: function() {
-        this.entryAnimation = "slide-from-left-animation";
-        this.exitAnimation = "slide-right-animation";
         // `attached` fires once the element and its parents have been inserted
         // into a document.
         //
@@ -127,8 +144,15 @@ Example:
 
       getTile: function(selected){
         return this.options[selected].tile;
-      }
+      },
 
+      _inanimation: function(){
+        // console.log('Dit issem', this.inanimation);
+      },
+
+      _outanimation: function(){
+        // console.log('Dit issem', this.outanimation);
+      },
     
     });
   </script>
