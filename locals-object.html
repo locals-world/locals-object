@@ -10,8 +10,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<<<<<<< HEAD
 <link rel="import" href="../locals-icon/locals-icon.html">
 
+=======
+<link rel="import" href="../iron-selector/iron-selector.html">
+>>>>>>> 6e031ffb7934180ab73e7c3484b0d0cd27a5c919
 <link rel="import" href="locals-objectlayer.html">
 
 
@@ -87,9 +91,12 @@ Example:
         padding: 10px;
       }
 
+      .iron-selected {
+        color: pink;
+      }
+
 
     </style>
-
 
   <template is="dom-if" if="{{isMode(mode,'edit')}}">
   <div class="absolutepos editbtns">
@@ -111,15 +118,20 @@ Example:
     <locals-objectlayer options="[[item.options]]" selected="[[arrayItem(config.objectconfig.*,index)]]" editmode="[[isMode(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
     </div>
   </template>
+
   </div>
 
   <div class="layerselector">
-  <template is="dom-if" if="{{isMode(mode,'edit')}}">
-    <template is="dom-repeat" items="{{config.layers}}" >
-      <button on-tap="selectlayer" data-args$="{{index}}">{{item.name}}</button>
+    <template is="dom-if" if="{{isMode(mode,'edit')}}">
+      <template is="dom-if" if="{{multilayer}}">
+        <iron-selector selected="{{selectedlayer}}">
+          <template is="dom-repeat" items="{{config.layers}}" >
+            <div on-tap="selectlayer" data-args$="{{index}}">{{item.name}}</div>
+          </template>
+        </iron-selector>
+      </template>
     </template>
-  </template>
-    </div>
+  </div>
 
 </template>
 
@@ -139,10 +151,12 @@ Example:
         mode: {
           type:String,
           value: "view"
+        },
+        selectedlayer: {
+          type: Number,
+          value :0
         }
-
       },
-
 
       arrayItem: function(change, index) {
         return change.base[index];
@@ -154,13 +168,10 @@ Example:
       },
 
       attached: function() {
-        // var self = this;
-        // setTimeout(function(){
-        //   console.log('change it');
-        //   self.set('config.objectconfig.0',0);
-        // },2000)
+        this.multilayer = this.config.layers.length > 1;
       },
 
+      // select a different layer
       selectlayer: function(e){
         this.selectedlayer = e.target.getAttribute('data-args');
       },
@@ -169,26 +180,21 @@ Example:
         this.inanimation = 'slide-from-right-animation';
         this.outanimation = 'slide-left-animation';
 
-        console.log('Selected layer=',this.selectedlayer);
-        console.log('currect value =',this.config.objectconfig[this.selectedlayer]);
-        console.log('layer options count=',this.config.layers[this.selectedlayer].options.length);
-        if (this.config.objectconfig[this.selectedlayer] == 0){
-          this.set('config.objectconfig.'+ this.selectedlayer, this.config.layers[this.selectedlayer].options.length -1);
-        }else{
-          this.set('config.objectconfig.'+ this.selectedlayer,this.config.objectconfig[this.selectedlayer]-1);
+        if (this.config.objectconfig[this.selectedlayer] == 0) {
+          this.set('config.objectconfig.' + this.selectedlayer, this.config.layers[this.selectedlayer].options.length - 1);
+        } else {
+          this.set('config.objectconfig.' + this.selectedlayer, this.config.objectconfig[this.selectedlayer] - 1);
         }
-        console.log('new value=',this.config.objectconfig[this.selectedlayer]);
       },
       next: function(){
         this.inanimation = 'slide-from-left-animation';
         this.outanimation = 'slide-right-animation';
 
-        if (this.config.objectconfig[this.selectedlayer] == this.config.layers[this.selectedlayer].options.length-1){
-          this.set('config.objectconfig.'+ this.selectedlayer, 0);
-        }else{
-          this.set('config.objectconfig.'+ this.selectedlayer,this.config.objectconfig[this.selectedlayer]+1);
+        if (this.config.objectconfig[this.selectedlayer] == this.config.layers[this.selectedlayer].options.length - 1) {
+          this.set('config.objectconfig.' + this.selectedlayer, 0);
+        } else {
+          this.set('config.objectconfig.' + this.selectedlayer, this.config.objectconfig[this.selectedlayer] + 1);
         }
-console.log('new value=',this.config.objectconfig[this.selectedlayer]);
       },
 
       detached: function() {
