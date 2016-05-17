@@ -174,10 +174,10 @@ Example:
       // Element Lifecycle
 
       ready: function() {
-        this.internalstate = this._clone(this.state);
       },
 
       attached: function() {
+        this.internalstate = this._clone(this.state);
         this.multilayer = this.config.layers.length > 1;
       },
 
