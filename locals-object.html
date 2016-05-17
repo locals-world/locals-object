@@ -11,25 +11,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../locals-icon/locals-icon.html">
-  <link rel="import" href="../iron-selector/iron-selector.html">
-  <link rel="import" href="locals-objectlayer.html">
+<link rel="import" href="../locals-button/locals-button.html">
+<link rel="import" href="../iron-selector/iron-selector.html">
+<link rel="import" href="locals-objectlayer.html">
 
-  <!--
-An element providing a solution to no problem in particular.
+<!--
+Abstraction of a locals object with configurable layers.
 
 Example:
 
     <locals-object></locals-object>
 Example:
 <locals-object>
-  <h2>Hello locals-object</h2>
+<h2>Hello locals-object</h2>
 </locals-object>
 @demo demo/index.html
-@hero hero.svg
 -->
 <dom-module id="locals-object">
-  <template>
-    <style>
+<template>
+  <style>
       :host {
         display: block;
         box-sizing: border-box;
@@ -93,21 +93,21 @@ Example:
 
     </style>
 
-    <template is="dom-if" if="{{_isMode(mode,'edit')}}">
-      <div class="absolutepos editbtns">
-        <div class="editbtn left">
-          <locals-icon iconcolor="darkgrey" on-tap="prev" icon="arrowleft"></locals-icon>
-        </div>
-        <div class="editbtn right">
-          <locals-icon iconcolor="darkgrey" on-tap="next" icon="arrowright"></locals-icon>
-        </div>
+  <template is="dom-if" if="{{_isMode(mode,'edit')}}">
+    <div class="absolutepos editbtns">
+      <div class="editbtn left">
+        <locals-icon iconcolor="darkgrey" on-tap="prev" icon="arrowleft"></locals-icon>
       </div>
+      <div class="editbtn right">
+        <locals-icon iconcolor="darkgrey" on-tap="next" icon="arrowright"></locals-icon>
+      </div>
+    </div>
   </template>
 
   <div class="canvas" on-tap="_toEdit">
     <template is="dom-repeat" items="{{config.layers}}" >
       <div class="absolutepos">
-        <locals-objectlayer options="[[item.options]]" selected="[[_arrayItem(config.objectconfig.*,index)]]" editmode="[[_isMode(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
+        <locals-objectlayer options="[[item.options]]" selected="[[_arrayItem(internalstate.*,index)]]" editmode="[[_isMode(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
       </div>
     </template>
   </div>
@@ -121,6 +121,8 @@ Example:
           </template>
         </iron-selector>
       </template>
+      <locals-button iconcolor="darkgrey" on-tap="_save" icon="v"></locals-button>
+      <locals-button iconcolor="darkgrey" on-tap="_discard" icon="decline"></locals-button>
     </template>
   </div>
 
@@ -132,12 +134,17 @@ Example:
 
       properties: {
         /**
-         * `config` is the internal configuration and state of the object
+         * `config` is the internal configuration and internalstate of the object
          */
         config: {
+          type: Object
+        },
+
+        state: {
           type: Object,
           notify: true
         },
+
         // `mode` is either 'view' or 'edit'
         mode: {
           type:String,
@@ -157,6 +164,7 @@ Example:
       // Element Lifecycle
 
       ready: function() {
+        this.internalstate = this._clone(this.state);
       },
 
       attached: function() {
@@ -173,11 +181,11 @@ Example:
         this.inanimation = 'slide-from-right-animation';
         this.outanimation = 'slide-left-animation';
 
-        if (this.config.objectconfig[this._selectedlayer] == 0) {
-          this.set('config.objectconfig.' + this._selectedlayer, this.config.layers[this._selectedlayer].options.length - 1);
+        if (this.internalstate[this._selectedlayer] == 0) {
+          this.set('internalstate.' + this._selectedlayer, this.config.layers[this._selectedlayer].options.length - 1);
 
         } else {
-          this.set('config.objectconfig.' + this._selectedlayer, this.config.objectconfig[this._selectedlayer] - 1);
+          this.set('internalstate.' + this._selectedlayer, this.internalstate[this._selectedlayer] - 1);
         }
       },
 
@@ -186,12 +194,22 @@ Example:
         this.inanimation = 'slide-from-left-animation';
         this.outanimation = 'slide-right-animation';
 
-        if (this.config.objectconfig[this._selectedlayer] == this.config.layers[this._selectedlayer].options.length - 1) {
-          this.set('config.objectconfig.' + this._selectedlayer, 0);
+        if (this.internalstate[this._selectedlayer] == this.config.layers[this._selectedlayer].options.length - 1) {
+          this.set('internalstate.' + this._selectedlayer, 0);
         } else {
-          this.set('config.objectconfig.' + this._selectedlayer, this.config.objectconfig[this._selectedlayer] + 1);
+          this.set('internalstate.' + this._selectedlayer, this.internalstate[this._selectedlayer] + 1);
         }
       },
+
+      _clone: function(obj) {
+          if (null == obj || "object" != typeof obj) return obj;
+          var copy = obj.constructor();
+          for (var attr in obj) {
+              if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+          }
+          return copy;
+      },
+
 
       detached: function() {
       },
@@ -202,6 +220,26 @@ Example:
 
       _toEdit: function(){
         this.mode = "edit";
+        this._oldinternalstate = {};
+        this._oldinternalstate = this._clone(this.internalstate);
+
+         //= Object.create(this.internalstate);
+      },
+
+      _toView: function(){
+        this.mode = "view";
+      },
+
+      _save: function(){
+        //this.fire('state-changed');
+        //this.set('state', this.internalstate);
+        this.state = this._clone(this.internalstate); //[]; //this.internalstate;
+        this._toView();
+      },
+
+      _discard: function(){
+        this.internalstate = this._clone(this._oldinternalstate);
+        this._toView();
       }
 
       // Element Behavior

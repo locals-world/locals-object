@@ -18,63 +18,78 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </head>
   <body unresolved>
 
-    <locals-object config="{{config}}"></locals-object>
+
+  <template is="dom-bind" id="app">
+
+    <locals-object config="{{config}}" state="{{state}}" on-state-changed="statechanged"></locals-object>
+
+    <pre>
+      <span>{{state}}</span>
+    </pre>
+  </template>
 
     <script>
-      var seedElement = document.querySelector('locals-object');
-      seedElement.config = {
-      layers: [{
-
-        "name": "skeleton",
-        "options": [{
-          "name": "whiteskeleton",
-          "tile": "skeletonimgs/white.png"
-        }, {
-          "name": "redskeleton",
-          "tile": "skeletonimgs/red.png"
-        }, {
-          "name": "greenskeleton",
-          "tile": "skeletonimgs/green.png"
-        }]
-      }
-
-      , {
-
-        "name": "headband",
-        "options": [{
-          "name": "empty",
-          "tile": "skeletonimgs/empty.png"
-        },{
-          "name": "band1",
-          "tile": "skeletonimgs/band1.png"
-        }, {
-          "name": "band2",
-          "tile": "skeletonimgs/band2.png"
-        }]
-
-      }
+      (function(document) {
+        'use strict';
+        var app = document.querySelector('#app');
 
 
-      , {
+        app.statechanged = function() {
+          console.log('state changed');
+        }
+
+        app.config = {
+          layers: [{
+
+              "name": "skeleton",
+              "options": [{
+                "name": "whiteskeleton",
+                "tile": "skeletonimgs/white.png"
+              }, {
+                "name": "redskeleton",
+                "tile": "skeletonimgs/red.png"
+              }, {
+                "name": "greenskeleton",
+                "tile": "skeletonimgs/green.png"
+              }]
+            }
+
+            , {
+
+              "name": "headband",
+              "options": [{
+                "name": "empty",
+                "tile": "skeletonimgs/empty.png"
+              }, {
+                "name": "band1",
+                "tile": "skeletonimgs/band1.png"
+              }, {
+                "name": "band2",
+                "tile": "skeletonimgs/band2.png"
+              }]
+
+            }
 
 
-        "name": "suit",
-        "options": [{
-          "name": "empty",
-          "tile": "skeletonimgs/empty.png"
-        },{
-          "name": "bluesuit",
-          "tile": "skeletonimgs/bluesuit.png"
-        }, {
-          "name": "greensuit",
-          "tile": "skeletonimgs/greensuit.png"
-        }]
-      }],
-      "objectconfig": [0, 1, 0]
+            , {
 
 
-      };
-
+              "name": "suit",
+              "options": [{
+                "name": "empty",
+                "tile": "skeletonimgs/empty.png"
+              }, {
+                "name": "bluesuit",
+                "tile": "skeletonimgs/bluesuit.png"
+              }, {
+                "name": "greensuit",
+                "tile": "skeletonimgs/greensuit.png"
+              }]
+            }
+          ]
+        };
+        app.state = [0, 1, 0];
+      })(document);
     </script>
 
   </body>
