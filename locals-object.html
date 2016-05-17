@@ -117,7 +117,14 @@ Example:
       <template is="dom-if" if="{{multilayer}}">
         <iron-selector selected="{{_selectedlayer}}">
           <template is="dom-repeat" items="{{config.layers}}" >
-            <div on-tap="selectlayer" data-args$="{{index}}">{{item.name}}</div>
+          <h3><div on-tap="selectlayer" data-args$="{{index}}">{{item.name}}</div></h3>
+          </template>
+        </iron-selector>
+      </template>
+      <template is="dom-if" if="{{_hasGroups(_selectedlayer)}}">
+         <iron-selector selected="{{_selectedgroup}}">
+          <template is="dom-repeat" items="{{_getGroups(_selectedlayer)}}" >
+            <h4><div on-tap="selectgroup" data-args$="{{item.value.name}}">{{item.key}}</div></h4>
           </template>
         </iron-selector>
       </template>
@@ -154,6 +161,9 @@ Example:
         _selectedlayer: {
           type: Number,
           value :0
+        },
+        _selectedGroup: {
+          type: String
         }
       },
 
@@ -201,6 +211,41 @@ Example:
         }
       },
 
+      _hasGroups: function(layer){
+        return this.config.layers[layer].groups || this.config.groups;
+      },
+
+      _getGroups: function(layer){
+        var groups = this.config.layers[layer].groups || this.config.groups;
+        if (!groups){
+          return;
+        }
+        var g = Object.keys(groups).map(function (key) {return ({key:key,val:groups[key]}); }); ;
+        return g;
+      },
+
+      selectgroup: function(e){
+        this._selectedGroup = e.target.getAttribute('data-args');
+      },
+
+      _getGroup: function(){
+        if (!this._hasGroups(this._selectedlayer)){
+          return;
+        }
+        return this._selectedGroup;
+      },
+
+      _groupFilter: function(options, _selectedGroup) {
+        var g = options.map(function(val) {
+
+          console.log(val);
+          //          return ({key:key,val:groups[key]}); }); ;
+          return val;
+        });
+        return g;
+
+      },
+
       _clone: function(obj) {
           if (null == obj || "object" != typeof obj) return obj;
           var copy = obj.constructor();
@@ -222,8 +267,6 @@ Example:
         this.mode = "edit";
         this._oldinternalstate = {};
         this._oldinternalstate = this._clone(this.internalstate);
-
-         //= Object.create(this.internalstate);
       },
 
       _toView: function(){
@@ -231,9 +274,7 @@ Example:
       },
 
       _save: function(){
-        //this.fire('state-changed');
-        //this.set('state', this.internalstate);
-        this.state = this._clone(this.internalstate); //[]; //this.internalstate;
+        this.state = this._clone(this.internalstate);
         this._toView();
       },
 
