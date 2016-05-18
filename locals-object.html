@@ -117,7 +117,7 @@ Example:
       <template is="dom-if" if="{{multilayer}}">
         <iron-selector selected="{{_selectedlayer}}">
           <template is="dom-repeat" items="{{config.layers}}" >
-          <h3><div on-tap="selectlayer" data-args$="{{index}}">{{item.name}}</div></h3>
+          <h3><div on-tap="selectlayer" data-args$="{{index}}">{{item.icon}}</div></h3>
           </template>
         </iron-selector>
       </template>
