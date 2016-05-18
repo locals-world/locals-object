@@ -40,9 +40,26 @@ Example:
 
       }
 
-      .canvas {
+
+      .total {
+        width: 100%;
+        @apply(--layout-vertical);
+        @apply(--layout-center);      
+      }
+
+      .arrowsandobject {
+        height: var(--obj-height);  
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+      }
+
+      .objectcanvas {
         width: var(--obj-width);
         height: var(--obj-height);  
+      }
+
+      .objectarrows {
+        width: var(--obj-width);
       }
       
       .absolutepos {
@@ -87,14 +104,49 @@ Example:
         padding: 10px;
       }
 
-      .iron-selected {
-        color: pink;
+
+      .layeritems {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+
+        @apply(--layout-wrap);
+        width: 100%;
+      }
+
+      .layeritem {
+        width: 50px;
+        height: 50px;
+        border:2px solid transparent;
+        border-radius: 50%;
       }
 
 
+      .iron-selected {
+        border:2px solid pink;
+      }
+      .layeritem img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .btns {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center); 
+        width: 100%;
+        padding-top: 20px;         
+      }
+
+      .btns locals-button {
+        margin: 5px;
+      }
+
     </style>
 
+<div class="total">
+
+<div class="arrowsandobject">
   <template is="dom-if" if="{{_isMode(mode,'edit')}}">
+  <div class="objectarrows">
     <div class="absolutepos editbtns">
       <div class="editbtn left">
         <locals-icon iconcolor="darkgrey" on-tap="prev" icon="arrowleft"></locals-icon>
@@ -103,22 +155,23 @@ Example:
         <locals-icon iconcolor="darkgrey" on-tap="next" icon="arrowright"></locals-icon>
       </div>
     </div>
+  </div>
   </template>
 
-  <div class="canvas" on-tap="_toEdit">
+  <div class="objectcanvas">
     <template is="dom-repeat" items="{{config.layers}}" >
-      <div class="absolutepos">
+      <div class="absolutepos" on-tap="_toEdit">
         <locals-objectlayer options="[[item.options]]" selected="[[_arrayItem(internalstate.*,index)]]" editmode="[[_isMode(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
       </div>
     </template>
   </div>
-
+</div>
   <div class="layerselector">
     <template is="dom-if" if="{{_isMode(mode,'edit')}}">
       <template is="dom-if" if="{{multilayer}}">
-        <iron-selector selected="{{_selectedlayer}}">
+        <iron-selector selected="{{_selectedlayer}}" class="layeritems">
           <template is="dom-repeat" items="{{config.layers}}" >
-          <h3><div on-tap="selectlayer" data-args$="{{index}}"><img src="{{item.icon}}"></div></h3>
+          <div class="layeritem" on-tap="selectlayer" data-args$="{{index}}"><img src="{{item.icon}}"></div>
           </template>
         </iron-selector>
       </template>
@@ -129,11 +182,13 @@ Example:
           </template>
         </iron-selector>
       </template>
-      <locals-button iconcolor="darkgrey" on-tap="_save" icon="v"></locals-button>
+      <div class="btns">
       <locals-button iconcolor="darkgrey" on-tap="_discard" icon="decline"></locals-button>
+      <locals-button iconcolor="darkgrey" on-tap="_save" icon="v"></locals-button>
+      </div>
     </template>
   </div>
-
+</div>
 </template>
 
 <script>
