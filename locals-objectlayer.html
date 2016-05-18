@@ -146,7 +146,11 @@ Example:
       },
 
       getTile: function(selected){
-        return this.options[selected].tile;
+        try{
+          return this.options[selected].tile;
+        }catch(e){
+          console.log(selected);
+        }
       },
 
       _inanimation: function(){

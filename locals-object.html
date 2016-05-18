@@ -108,7 +108,7 @@ Example:
   <div class="canvas" on-tap="_toEdit">
     <template is="dom-repeat" items="{{config.layers}}" >
       <div class="absolutepos">
-        <locals-objectlayer options="[[item.options]]" selected="[[_arrayItem(internalstate.*,index)]]" editmode="[[_isMode(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
+        <locals-objectlayer options="[[_filterOptions(index,item.options,_selectedgroup)]]" selected="[[_arrayItem(internalstate.*,index)]]" editmode="[[_isMode(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
       </div>
     </template>
   </div>
@@ -118,17 +118,23 @@ Example:
       <template is="dom-if" if="{{multilayer}}">
         <iron-selector selected="{{_selectedlayer}}">
           <template is="dom-repeat" items="{{config.layers}}" >
-          <h3><div on-tap="selectlayer" data-args$="{{index}}"><img src="{{item.icon}}"></div></h3>
+            <h3>
+                <img on-tap="selectlayer" data-args$="{{index}}" style="width:50px;height:50px;" src="{{item.icon}}">
+            </h3>
           </template>
         </iron-selector>
       </template>
+
       <template is="dom-if" if="{{_hasGroups(_selectedlayer)}}">
-         <iron-selector selected="{{_selectedgroup}}">
+        <iron-selector selected="{{_selectedgroup}}">
           <template is="dom-repeat" items="{{_getGroups(_selectedlayer)}}" >
-            <h4><div on-tap="selectgroup" data-args$="{{item.value.name}}">{{item.key}}</div></h4>
+            <h4>
+              <div on-tap="selectgroup" class="{{item.class}}" data-args$="{{item}}">{{item.name}}</div>
+            </h4>
           </template>
         </iron-selector>
       </template>
+
       <locals-button iconcolor="darkgrey" on-tap="_save" icon="v"></locals-button>
       <locals-button iconcolor="darkgrey" on-tap="_discard" icon="decline"></locals-button>
     </template>
@@ -163,8 +169,9 @@ Example:
           type: Number,
           value :0
         },
-        _selectedGroup: {
-          type: String
+        _selectedgroup: {
+          type: Number,
+           value :0
         }
       },
 
@@ -213,16 +220,17 @@ Example:
       },
 
       _hasGroups: function(layer){
-        return this.config.layers[layer].groups || this.config.groups;
+        return this.config.layers[layer].colors || this.config.colors;
       },
 
       _getGroups: function(layer){
-        var groups = this.config.layers[layer].groups || this.config.groups;
+        var groups = this.config.layers[layer].colors || this.config.colors;
         if (!groups){
           return;
         }
-        var g = Object.keys(groups).map(function (key) {return ({key:key,val:groups[key]}); }); ;
-        return g;
+//        var g = Object.keys(groups).map(function (key) {return ({key:key,val:groups[key]}); }); ;
+//        return g;
+        return groups;
       },
 
       selectgroup: function(e){
@@ -245,6 +253,19 @@ Example:
         });
         return g;
 
+      },
+      _filterOptions: function(layer,options,selectedgroup){
+        if (layer != this._selectedlayer){
+          return options;
+        }
+        var self=this;
+        var selectedoptions = [];
+        options.forEach(function(option){
+          if (!option.group || option.group == self.config.colors[selectedgroup].name){
+            selectedoptions.push(option);
+          }
+        });
+        return selectedoptions;
       },
 
       _clone: function(obj) {
