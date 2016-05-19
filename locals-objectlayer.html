@@ -17,20 +17,16 @@ An element providing a solution to no problem in particular.
 Example:
 
     <locals-object></locals-object>
-
 Example:
-
-    <locals-object>
-      <h2>Hello locals-object</h2>
-    </locals-object>
-
+<locals-object>
+<h2>Hello locals-object</h2>
+</locals-object>
 @demo demo/index.html
 @hero hero.svg
 -->
-
 <dom-module id="locals-objectlayer">
-  <template>
-    <style>
+<template>
+  <style>
       :host {
         display: block;
         box-sizing: border-box;
@@ -46,38 +42,26 @@ Example:
 
     </style>
 
-    <template is="dom-if" if="{{!editmode}}">
-    <img src="{{getTile(selected)}}">
-    </template>
+  <template is="dom-if" if="{{!editmode}}">
+    <img src="{{getTile(images,selected)}}"></template>
 
-    <template is="dom-if" if="{{editmode}}">
-      <neon-animated-pages selected="{{selected}}" entry-animation="{{inanimation}}" exit-animation="{{outanimation}}">
-        <template is="dom-repeat" items="{{options}}">
-          <neon-animatable>
-          <img src="{{item.tile}}">
-          </neon-animatable>
-        </template>
-      </neon-animated-pages>
-
-<!--       <template is="dom-repeat" items="{{options}}" >
-        <div>{{index}} / {{selected}} = {{item.name}} - {{item.tile}}</div>
-        <template is="dom-if" if="{{_eq(index,selected)}}">
-        DIT ISSEM
-        </template>
-      </template>   -->    
-    </template>
-
-
-
+  <template is="dom-if" if="{{editmode}}">
+    <neon-animated-pages selected="{{selected}}" entry-animation="{{inanimation}}" exit-animation="{{outanimation}}">
+      <template is="dom-repeat" items="{{images}}">
+        <neon-animatable>
+          <img src="{{item}}"></neon-animatable>
+      </template>
+    </neon-animated-pages>
   </template>
+</template>
 
-  <script>
+<script>
     Polymer({
       is: 'locals-objectlayer',
 
       properties: {
-        options: {
-          type: Object
+        images: {
+          type: Array
         },
         selected: {
           type: Number
@@ -145,12 +129,17 @@ Example:
         // Use this to clean up anything you did in `attached`.
       },
 
-      getTile: function(selected){
-        try{
-          return this.options[selected].tile;
-        }catch(e){
-          console.log(selected);
+      getTile: function(images,selected){
+        if (!images){
+          return;
         }
+        try{
+          return images[selected];
+        }catch(e){
+          console.log("AIAIAIAIAIAIAIAI",selected);
+        }
+
+        
       },
 
       _inanimation: function(){

@@ -161,7 +161,7 @@ Example:
   <div class="objectcanvas">
     <template is="dom-repeat" items="{{config.layers}}" >
       <div class="absolutepos" on-tap="_toEdit">
-        <locals-objectlayer options="[[_filterOptions(index,item.options,_selectedgroup)]]" selected="[[_arrayItem(internalstate.*,index)]]" editmode="[[_isMode(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
+        <locals-objectlayer images="[[_getVariantTiles(internalstate.*,index)]]" selected="[[_getSelected(internalstate.*,index)]]" editmode="[[_isMode(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
       </div>
     </template>
   </div>
@@ -172,16 +172,16 @@ Example:
         <iron-selector selected="{{_selectedlayer}}" class="layeritems">
           <template is="dom-repeat" items="{{config.layers}}" >
 
-          <div class="layeritem" on-tap="selectlayer" data-args$="{{index}}"><img src="{{item.icon}}"></div>
+          <div class="layeritem" on-tap="selectlayer"><img data-args$="{{index}}" src="{{item.icon}}"></div>
           </template>
         </iron-selector>
       </template>
 
-      <template is="dom-if" if="{{_hasGroups(_selectedlayer)}}">
-        <iron-selector selected="{{_selectedgroup}}">
-          <template is="dom-repeat" items="{{_getGroups(_selectedlayer)}}" >
+      <template is="dom-if" if="{{_hasColors(_selectedlayer)}}">
+        <iron-selector selected="{{_getLayerColor(internalstate.*,_selectedlayer)}}">
+          <template is="dom-repeat" items="{{_getColors(_selectedlayer)}}" >
             <h4>
-              <div on-tap="selectgroup" class="{{item.class}}" data-args$="{{item}}">{{item.name}}</div>
+              <div on-tap="selectcolor" class="{{item}}" data-args$="{{index}}">{{item}}</div>
             </h4>
           </template>
         </iron-selector>
@@ -215,28 +215,38 @@ Example:
 
         // `mode` is either 'view' or 'edit'
         mode: {
-          type:String,
+          type: String,
           value: "view"
         },
 
         _selectedlayer: {
           type: Number,
-          value :0
-        },
-        _selectedgroup: {
-          type: Number,
-           value :0
+          value: 0
         }
       },
 
-      _arrayItem: function(change, index) {
-        return change.base[index];
+      _getVariantTiles: function(state, index) {
+
+        var color = this.config.layers[index].colors[this.internalstate[index][1]];
+        var tiles = [];
+        var self = this;
+        this.config.layers[index].variants.forEach(function(variant) {
+          var tileindex = variant + '-' + color;
+          tiles.push(self.config.layers[index].images[tileindex]);
+
+        })
+        return (tiles);
+      },
+
+
+
+      _getSelected: function(change, index) {
+        return this.internalstate[index][0];
       },
 
       // Element Lifecycle
 
-      ready: function() {
-      },
+      ready: function() {},
 
       attached: function() {
         this.internalstate = this._clone(this.state);
@@ -244,7 +254,8 @@ Example:
       },
 
       // select a different layer
-      selectlayer: function(e){
+      selectlayer: function(e) {
+        console.log('select layer', e.target.getAttribute('data-args'));
         this._selectedlayer = e.target.getAttribute('data-args');
       },
 
@@ -253,11 +264,11 @@ Example:
         this.inanimation = 'slide-from-right-animation';
         this.outanimation = 'slide-left-animation';
 
-        if (this.internalstate[this._selectedlayer] == 0) {
-          this.set('internalstate.' + this._selectedlayer, this.config.layers[this._selectedlayer].options.length - 1);
+        if (this.internalstate[this._selectedlayer][0] == 0) {
+          this.set('internalstate.' + this._selectedlayer + '.0', this.config.layers[this._selectedlayer].variants.length - 1);
 
         } else {
-          this.set('internalstate.' + this._selectedlayer, this.internalstate[this._selectedlayer] - 1);
+          this.set('internalstate.' + this._selectedlayer + '.0', this.internalstate[this._selectedlayer][0] - 1);
         }
       },
 
@@ -266,102 +277,66 @@ Example:
         this.inanimation = 'slide-from-left-animation';
         this.outanimation = 'slide-right-animation';
 
-        if (this.internalstate[this._selectedlayer] == this.config.layers[this._selectedlayer].options.length - 1) {
-          this.set('internalstate.' + this._selectedlayer, 0);
+        if (this.internalstate[this._selectedlayer][0] == this.config.layers[this._selectedlayer].variants.length - 1) {
+          this.set('internalstate.' + this._selectedlayer + '.0', 0);
         } else {
-          this.set('internalstate.' + this._selectedlayer, this.internalstate[this._selectedlayer] + 1);
+          this.set('internalstate.' + this._selectedlayer + '.0', this.internalstate[this._selectedlayer][0] + 1);
         }
       },
 
-      _hasGroups: function(layer){
-        return this.config.layers[layer].colors || this.config.colors;
+      _hasColors: function(layer) {
+        return this.config.layers[layer].colors && this.config.layers[layer].colors.length > 1;
       },
 
-      _getGroups: function(layer){
-        var groups = this.config.layers[layer].colors || this.config.colors;
-        if (!groups){
-          return;
-        }
-//        var g = Object.keys(groups).map(function (key) {return ({key:key,val:groups[key]}); }); ;
-//        return g;
+      _getColors: function(layer) {
+        var groups = this.config.layers[this._selectedlayer].colors;
         return groups;
       },
 
-      selectgroup: function(e){
-        this._selectedGroup = e.target.getAttribute('data-args');
+      selectcolor: function(e) {
+        this.set('internalstate.' + this._selectedlayer + '.1', e.target.getAttribute('data-args'));
       },
 
-      _getGroup: function(){
-        if (!this._hasGroups(this._selectedlayer)){
-          return;
-        }
-        return this._selectedGroup;
-      },
-
-      _groupFilter: function(options, _selectedGroup) {
-        var g = options.map(function(val) {
-
-          console.log(val);
-          //          return ({key:key,val:groups[key]}); }); ;
-          return val;
-        });
-        return g;
-
-      },
-      _filterOptions: function(layer,options,selectedgroup){
-        if (layer != this._selectedlayer){
-          return options;
-        }
-        var self=this;
-        var selectedoptions = [];
-        options.forEach(function(option){
-          if (!option.group || option.group == self.config.colors[selectedgroup].name){
-            selectedoptions.push(option);
-          }
-        });
-        return selectedoptions;
+      _getLayerColor: function() {
+        return this.internalstate[this._selectedlayer][1];
       },
 
       _clone: function(obj) {
-          if (null == obj || "object" != typeof obj) return obj;
-          var copy = obj.constructor();
-          for (var attr in obj) {
-              if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
-          }
-          return copy;
+        if (null == obj || "object" != typeof obj) return obj;
+        var copy = obj.constructor();
+        for (var attr in obj) {
+          if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+        }
+        return copy;
       },
 
 
-      detached: function() {
+      detached: function() {},
+
+      _isMode: function(a, b) {
+        return a == b;
       },
 
-      _isMode: function(a,b){
-        return a==b;
-      },
-
-      _toEdit: function(){
+      _toEdit: function() {
         this.mode = "edit";
         this._oldinternalstate = {};
         this._oldinternalstate = this._clone(this.internalstate);
       },
 
-      _toView: function(){
+      _toView: function() {
         this.mode = "view";
       },
 
-      _save: function(){
+      _save: function() {
         this.state = this._clone(this.internalstate);
         this._toView();
       },
 
-      _discard: function(){
-        this.internalstate = this._clone(this._oldinternalstate);
+      _discard: function() {
+        this.set('internalstate',this._clone(this._oldinternalstate));
         this._toView();
       }
 
-      // Element Behavior
-
-    
     });
   </script>
 </dom-module>
