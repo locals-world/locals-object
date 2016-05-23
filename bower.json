@@ -22,7 +22,8 @@
     "neon-animation": "^1.2.3",
     "locals-button": "https://github.com/locals-world/locals-button.git#^0.0.5",
     "locals-icon": "https://github.com/locals-world/locals-icon.git",
-    "iron-selector": "PolymerElements/iron-selector#^1.5.1"
+    "iron-selector": "PolymerElements/iron-selector#^1.5.1",
+    "iron-media-query": "^1.0.8"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
