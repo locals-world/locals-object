@@ -10,6 +10,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../neon-animation/neon-animation.html">
+<link rel="import" href="../iron-form/iron-form.html">
+<link rel="import" href="../iron-form/iron-form.html">
+<link rel="import" href="../locals-input/locals-input.html">
+<link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../locals-botton/locals-button.html">
+
 
 <!--
 An element providing a solution to no problem in particular.
@@ -43,17 +51,44 @@ Example:
     </style>
 
   <template is="dom-if" if="{{!editmode}}">
-   <locals-button iconcolor="darkgrey" on-tap="_toEdit" icon=""></locals-button>
+    <locals-button iconcolor="darkgrey" on-tap="_toEdit" icon=""></locals-button>
   </template>
 
   <template is="dom-if" if="{{editmode}}">
-   
+<!-- 
+    <form is="iron-form" id="avatarform" on-iron-form-submit="_submit">
       <template is="dom-repeat" items="{{_getFields()}}">
-        <div>{{item.name}} : <input name="{{item.name}}"></div>
+        <locals-input id="{{item.name}}" name="{{item.name}}" label="{{item.label}}" required></locals-input>
       </template>
+      <locals-button iconcolor="darkgrey" on-tap="_save(event)" icon="v"></locals-button>
+      <locals-button iconcolor="darkgrey" on-tap="_discard" icon="decline"></locals-button>
+
+    </form>
+
+ -->
+
+<form is="iron-form" method="get" on-iron-form-submit="_submitform" action="/" id="basic">
+<!-- <input is="iron-input" name="zaza" label="zozo"/> -->
+   <template is="dom-repeat" items="{{_getFields(state)}}">
+    <!-- <input is="iron-input" name="{{item.name}}" label="{{item.label}}"> -->
+    <!-- <paper-input name="{{item.name}}" label="{{item.label}}"></paper-input> -->
+
+    <locals-input name="{{item.name}}" label="{{item.label}}" inputvalue="{{_getValue(item.name,state)}}"></locals-input>
+
+  </template>
   
-  <locals-button iconcolor="darkgrey" on-tap="_save" icon="v"></locals-button>
-  <locals-button iconcolor="darkgrey" on-tap="_discard" icon="decline"></locals-button>
+<!-- <locals-input name="{{item.name}}" label="{{item.label}}"></locals-input> -->
+<!-- 
+  <input type="checkbox" name="food" value="donuts" checked> I like donuts<br>
+  <input type="checkbox" name="food" value="pizza" required> I like pizza<br>
+  -->
+  <locals-button raised on-tap="_submit">Submit</locals-button>
+  <locals-button raised onclick="_reset(event)">Reset</locals-button>
+  <div class="output"></div>
+</form>
+
+
+
 
   </template>
 </template>
@@ -69,11 +104,25 @@ Example:
         editmode: {
           type: Boolean,
           value: false
-        }       
+        },
+        state: {
+          type: Object,
+          notify: true
+        },
       },
 
-      _eq : function(a,b){
-        return a==b;
+      _submit: function(event) {
+        Polymer.dom(event).localTarget.parentElement.submit();
+      },
+
+      _submitform: function(e) {
+        console.log(e.detail);
+        this._toView();
+        this.fire('state-changed');
+      },
+
+      _eq: function(a, b) {
+        return a == b;
       },
 
 
@@ -112,30 +161,34 @@ Example:
         // Use this to clean up anything you did in `attached`.
       },
 
-    _toEdit: function(){
-      this.editmode = true;
-    },
+      _toEdit: function() {
+        this.editmode = true;
+      },
 
-    _getFields: function(){
-      return [{ name: "voornaam"},{name:"achternaam"},{name:"voorstaart"}];
-    },
+      _toView: function() {
+        this.editmode = false;
+      },
 
-    _discard: function(){
-      this.editmode = false;
-    },
+      _getFields: function() {
+        return this.config.fields;
+      },
 
-    _save: function(){
-      this.editmode = false;
-    },
+      _getValue: function(inputfieldname) {
+        return this.state[inputfieldname];
+      },
 
-      _inanimation: function(){
+      _discard: function() {
+        this.editmode = false;
+      },
+
+      _inanimation: function() {
         // console.log('Dit issem', this.inanimation);
       },
 
-      _outanimation: function(){
+      _outanimation: function() {
         // console.log('Dit issem', this.outanimation);
       },
-    
+
     });
   </script>
 </dom-module>

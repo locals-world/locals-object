@@ -13,7 +13,6 @@ LOCALS
 <link rel="import" href="../locals-button/locals-button.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
 <link rel="import" href="locals-objectlayer.html">
-<link rel="import" href="locals-dataobject.html">
 
 <!--
 Abstraction of a locals object with configurable layers.
@@ -194,7 +193,6 @@ Example:
     </template>
   </div>
 </div>
-  <locals-dataobject data="{{data}}" config="{{dataconfig}}"></locals-dataobject>
 </template>
 
 <script>
@@ -208,19 +206,12 @@ Example:
         config: {
           type: Object
         },
-        dataconfig: {
-            type: Object
-        },
+       
         state: {
           type: Object,
           notify: true
         },
         
-        data: {
-          type: Object,
-          notify: true
-        },
-
         // `mode` is either 'view' or 'edit'
         mode: {
           type: String,
