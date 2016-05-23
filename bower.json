@@ -25,7 +25,8 @@
     "iron-selector": "PolymerElements/iron-selector#^1.5.1",
     "iron-form": "PolymerElements/iron-form#^1.0.16",
     "locals-input": "https://github.com/locals-world/locals-input.git",
-    "iron-media-query": "^1.0.8"
+    "iron-media-query": "^1.0.8",
+    "locals-confirm": "https://github.com/locals-world/locals-confirm.git"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
