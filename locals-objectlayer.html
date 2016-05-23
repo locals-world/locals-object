@@ -136,18 +136,17 @@ Example:
         try{
           return images[selected];
         }catch(e){
-          console.log("AIAIAIAIAIAIAIAI",selected);
+          // we will only arrive here if the config was incorrect/inconsistent
+          return;
         }
 
         
       },
 
       _inanimation: function(){
-        // console.log('Dit issem', this.inanimation);
       },
 
       _outanimation: function(){
-        // console.log('Dit issem', this.outanimation);
       },
     
     });
