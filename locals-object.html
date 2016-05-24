@@ -11,6 +11,7 @@ LOCALS
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../locals-icon/locals-icon.html">
 <link rel="import" href="../locals-button/locals-button.html">
+<link rel="import" href="../locals-confirm/locals-confirm.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
 <link rel="import" href="../iron-media-query/iron-media-query.html">
 
@@ -115,6 +116,10 @@ Example:
         width: 100%;
       }
 
+      .layeritems .iron-selected {
+        border:2px solid pink;
+      }
+
       .layeritem {
         width: 50px;
         height: 50px;
@@ -122,10 +127,6 @@ Example:
         border-radius: 50%;
       }
 
-
-      .iron-selected {
-        border:2px solid pink;
-      }
       .layeritem img {
         width: 100%;
         height: 100%;
@@ -143,8 +144,52 @@ Example:
       }
 
 
+      .layercolors {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
 
+        @apply(--layout-wrap);
+        width: 100%;
+      }
 
+      .layercolors .iron-selected {
+        border-bottom: 2px solid var(--locals-darkgrey);
+        width: 32px;
+        height: 32px;
+      }
+
+      .coloritem {
+        width: 25px;
+        height: 25px;
+/*        border-radius: 50%;
+        margin: 2px;
+        border:1px solid var(--locals-grey6);*/
+      }
+
+      .blue {
+        background-color: var(--locals-blue);
+      }
+      .darkblue {
+        background-color: var(--locals-darkblue);
+      }
+      .lightblue {
+        background-color: var(--locals-lightblue);
+      }
+      .green {
+        background-color: var(--locals-green);
+      }
+      .purple {
+        background-color: var(--locals-purple);
+      }
+      .red {
+        background-color: var(--locals-red);
+      }
+      .white {
+        background-color: var(--locals-white);
+      }
+      .yellow {
+        background-color: var(--locals-yellow);
+      }
 
 
 
@@ -184,24 +229,28 @@ Example:
         <iron-selector selected="{{_selectedlayer}}" class="layeritems">
           <template is="dom-repeat" items="{{config.layers}}" >
 
-          <div class="layeritem" on-tap="selectlayer"><img data-args$="{{index}}" src="{{item.icon}}"></div>
+          <div class="layeritem" on-tap="selectlayer">
+          <img data-args$="{{index}}" src="{{item.icon}}">
+          </div>
           </template>
         </iron-selector>
       </template>
 
       <template is="dom-if" if="{{_hasColors(_selectedlayer)}}">
-        <iron-selector selected="{{_getLayerColor(internalstate.*,_selectedlayer)}}">
+        <iron-selector selected="{{_getLayerColor(internalstate.*,_selectedlayer)}}" class="layercolors">
           <template is="dom-repeat" items="{{_getColors(_selectedlayer)}}" >
-            <h4>
-              <div on-tap="selectcolor" class="{{item}}" data-args$="{{index}}">{{item}}</div>
-            </h4>
+              <div on-tap="selectcolor" class$="{{item}} coloritem" data-args$="{{index}}"></div>
           </template>
         </iron-selector>
       </template>
 
       <div class="btns">
-        <locals-button iconcolor="darkgrey" on-tap="_save" icon="v"></locals-button>
-        <locals-button iconcolor="darkgrey" on-tap="_discard" icon="decline"></locals-button>
+
+    <locals-confirm on-cancel="_discard" on-confirm="_save" small>
+    </locals-confirm>
+
+<!--         <locals-button iconcolor="darkgrey" on-tap="_save" icon="v"></locals-button>
+        <locals-button iconcolor="darkgrey" on-tap="_discard" icon="decline"></locals-button> -->
       </div>
     </template>
   </div>
