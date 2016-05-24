@@ -202,7 +202,7 @@ Example:
 <div class="total">
 
 <div class="arrowsandobject">
-  <template is="dom-if" if="{{_isMode(mode,'edit')}}">
+  <template is="dom-if" if="{{_is(mode,'edit')}}">
   <div class="objectarrows">
     <div class="absolutepos editbtns">
       <div class="editbtn left">
@@ -218,19 +218,23 @@ Example:
   <div class="objectcanvas">
     <template is="dom-repeat" items="{{config.layers}}" >
       <div class="absolutepos" on-tap="_toEdit">
-        <locals-objectlayer images="[[_getVariantTiles(internalstate.*,index)]]" selected="[[_getSelected(internalstate.*,index)]]" editmode="[[_isMode(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
+        <locals-objectlayer images="[[_getVariantTiles(internalstate.*,index)]]" selected="[[_getSelected(internalstate.*,index)]]" editmode="[[_is(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
       </div>
     </template>
   </div>
 </div>
   <div class="layerselector">
-    <template is="dom-if" if="{{_isMode(mode,'edit')}}">
+    <template is="dom-if" if="{{_is(mode,'edit')}}">
       <template is="dom-if" if="{{multilayer}}">
         <iron-selector selected="{{_selectedlayer}}" class="layeritems">
           <template is="dom-repeat" items="{{config.layers}}" >
-
           <div class="layeritem" on-tap="selectlayer">
-          <img data-args$="{{index}}" src="{{item.icon}}">
+          <template is="dom-if" if="{{_is(_selectedlayer,index)}}">
+            <img src="{{item.iconselected}}" data-args$="{{index}}">    
+          </template>
+          <template is="dom-if" if="{{!_is(_selectedlayer,index)}}">
+            <img src="{{item.icon}}" data-args$="{{index}}">        
+          </template>
           </div>
           </template>
         </iron-selector>
@@ -332,8 +336,8 @@ Example:
 
       // select a different layer
       selectlayer: function(e) {
-        console.log('select layer', e.target.getAttribute('data-args'));
-        this._selectedlayer = e.target.getAttribute('data-args');
+        console.log('select layer',e.target.dataset.args);
+        this._selectedlayer = parseInt(e.target.dataset.args);
       },
 
       // select previous item in current layer, rolls around if you're at the beginning
@@ -390,7 +394,8 @@ Example:
 
       detached: function() {},
 
-      _isMode: function(a, b) {
+      _is: function(a, b) {
+        //console.log(a,'is',b,a == b);
         return a == b;
       },
 
