@@ -216,7 +216,7 @@ Example:
   </template>
 
   <div class="objectcanvas">
-    <template is="dom-repeat" items="{{config.layers}}" >
+    <template is="dom-repeat" items="{{config.layers}}" observe="state">
       <div class="absolutepos" on-tap="_toEdit">
         <locals-objectlayer images="[[_getVariantTiles(internalstate.*,index)]]" selected="[[_getSelected(internalstate.*,index)]]" editmode="[[_is(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
       </div>
@@ -264,7 +264,6 @@ Example:
 <script>
     Polymer({
       is: 'locals-object',
-
       properties: {
         /**
          * `config` is the internal configuration and internalstate of the object
@@ -274,8 +273,9 @@ Example:
         },
        
         state: {
-          type: Object,
-          notify: true
+          type: Array,
+          notify: true,
+          observer: 'stateUpdate'
         },
         
         // `mode` is either 'view' or 'edit'
@@ -330,8 +330,13 @@ Example:
       ready: function() {},
 
       attached: function() {
-        this.internalstate = this._clone(this.state);
         this.multilayer = this.config.layers.length > 1;
+        this.stateUpdate();
+      },
+
+      // this gets triggered when the state is updated from elsewhere.
+      stateUpdate: function(){
+        this.internalstate = this._clone(this.state);
       },
 
       // select a different layer
