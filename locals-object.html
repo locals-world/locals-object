@@ -13,6 +13,7 @@ LOCALS
 <link rel="import" href="../locals-button/locals-button.html">
 <link rel="import" href="../locals-confirm/locals-confirm.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
+<link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../iron-media-query/iron-media-query.html">
 
 <link rel="import" href="locals-objectlayer.html">
@@ -107,6 +108,14 @@ Example:
         padding: 10px;
       }
 
+      .layerselector {
+        min-height: 110px;
+        box-sizing: border-box;
+        padding: 0vh 0vh 5vh 0vh;        
+        /*border-top: 1px dashed var(--locals-grey4);*/
+        border-bottom: 1px dashed var(--locals-grey4);
+      }
+
 
       .layeritems {
         @apply(--layout-horizontal);
@@ -114,17 +123,21 @@ Example:
 
         @apply(--layout-wrap);
         width: 100%;
+        box-sizing: border-box;
+        padding: 0vw 10vw 0vw 10vw;
+
       }
 
       .layeritems .iron-selected {
-        border:2px solid pink;
+        border:1px solid var(--locals-darkgrey);
       }
 
       .layeritem {
         width: 50px;
         height: 50px;
-        border:2px solid transparent;
+        border:1px solid transparent;
         border-radius: 50%;
+        margin: 2px;
       }
 
       .layeritem img {
@@ -192,7 +205,6 @@ Example:
       }
 
 
-
     </style>
 
   <iron-media-query query="(min-width:0px) and (max-width: 600px)" query-matches="{{phoneview}}"></iron-media-query>
@@ -223,6 +235,7 @@ Example:
     </template>
   </div>
 </div>
+  <iron-collapse id="collapse">
   <div class="layerselector">
     <template is="dom-if" if="{{_is(mode,'edit')}}">
       <template is="dom-if" if="{{multilayer}}">
@@ -239,7 +252,6 @@ Example:
           </template>
         </iron-selector>
       </template>
-
       <template is="dom-if" if="{{_hasColors(_selectedlayer)}}">
         <iron-selector selected="{{_getLayerColor(internalstate.*,_selectedlayer)}}" class="layercolors">
           <template is="dom-repeat" items="{{_getColors(_selectedlayer)}}" >
@@ -258,6 +270,8 @@ Example:
       </div>
     </template>
   </div>
+</iron-collapse> 
+
 </div>
 </template>
 
@@ -403,6 +417,7 @@ Example:
         this.mode = "edit";
         this._oldinternalstate = {};
         this._oldinternalstate = this._clone(this.internalstate);
+        this.$.collapse.toggle();
       },
 
       _toView: function() {
@@ -412,11 +427,13 @@ Example:
       _save: function() {
         this.state = this._clone(this.internalstate);
         this._toView();
+        this.$.collapse.toggle();
       },
 
       _discard: function() {
         this.set('internalstate',this._clone(this._oldinternalstate));
         this._toView();
+        this.$.collapse.toggle();
       },
 
       _sizeview: function(){
