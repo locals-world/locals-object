@@ -6,7 +6,6 @@ LOCALS
 /////////////////
 -->
 
-
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../locals-icon/locals-icon.html">
@@ -211,66 +210,64 @@ Example:
   <iron-media-query query="(min-width:601px) and (max-width: 1280px)" query-matches="{{desktopview}}"></iron-media-query>
   <iron-media-query query="(min-width:1281px)" query-matches="{{xlargeview}}"></iron-media-query>
 
-<div class="total">
+  <div class="total">
 
-<div class="arrowsandobject">
-  <template is="dom-if" if="{{_is(mode,'edit')}}">
-  <div class="objectarrows">
-    <div class="absolutepos editbtns">
-      <div class="editbtn left">
-        <locals-icon iconcolor="darkgrey" on-tap="prev" icon="arrowleft"></locals-icon>
-      </div>
-      <div class="editbtn right">
-        <locals-icon iconcolor="darkgrey" on-tap="next" icon="arrowright"></locals-icon>
+    <div class="arrowsandobject">
+      <template is="dom-if" if="{{_is(mode,'edit')}}">
+        <div class="objectarrows">
+          <template is="dom-if" if="{{_hasvariants()}}">ICH HEM VARIANTEN</template>
+          <div class$="absolutepos editbtns {{_hasvariants('active')}}">
+            <div class="editbtn left">
+              <locals-icon iconcolor="darkgrey" on-tap="prev" icon="arrowleft"></locals-icon>
+            </div>
+            <div class="editbtn right">
+              <locals-icon iconcolor="darkgrey" on-tap="next" icon="arrowright"></locals-icon>
+            </div>
+          </div>
+        </div>
+      </template>
+
+      <div class="objectcanvas">
+        <template is="dom-repeat" items="{{config.layers}}" observe="state">
+          <div class="absolutepos" on-tap="_toEdit">
+            <locals-objectlayer images="[[_getVariantTiles(internalstate.*,index)]]" selected="[[_getSelected(internalstate.*,index)]]" editmode="[[_is(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
+          </div>
+        </template>
       </div>
     </div>
-  </div>
-  </template>
-
-  <div class="objectcanvas">
-    <template is="dom-repeat" items="{{config.layers}}" observe="state">
-      <div class="absolutepos" on-tap="_toEdit">
-        <locals-objectlayer images="[[_getVariantTiles(internalstate.*,index)]]" selected="[[_getSelected(internalstate.*,index)]]" editmode="[[_is(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
-      </div>
-    </template>
-  </div>
-</div>
-  <iron-collapse id="collapse">
-  <div class="layerselector">
-    <template is="dom-if" if="{{_is(mode,'edit')}}">
-      <template is="dom-if" if="{{multilayer}}">
-        <iron-selector selected="{{_selectedlayer}}" class="layeritems">
-          <template is="dom-repeat" items="{{config.layers}}" >
-          <div class="layeritem" on-tap="selectlayer">
-          <template is="dom-if" if="{{_is(_selectedlayer,index)}}">
-            <img src="{{item.iconselected}}" data-args$="{{index}}">    
+    <iron-collapse id="collapse">
+      <div class="layerselector">
+        <template is="dom-if" if="{{_is(mode,'edit')}}">
+          <template is="dom-if" if="{{multilayer}}">
+            <iron-selector selected="{{_selectedlayer}}" class="layeritems">
+              <template is="dom-repeat" items="{{config.layers}}">
+                <template is="dom-if" if="{{!_is(item.hidden)}}">
+                  <div class="layeritem" on-tap="selectlayer">
+                    <template is="dom-if" if="{{_is(_selectedlayer,index)}}">
+                      <img src="{{item.iconselected}}" data-args$="{{index}}"></template>
+                    <template is="dom-if" if="{{!_is(_selectedlayer,index)}}">
+                      <img src="{{item.icon}}" data-args$="{{index}}"></template>
+                  </div>
+                </template>
+                <template is="dom-if" if="{{_is(item.hidden)}}">
+                  <div></div>
+                </template>
+              </template>
+            </iron-selector>
           </template>
-          <template is="dom-if" if="{{!_is(_selectedlayer,index)}}">
-            <img src="{{item.icon}}" data-args$="{{index}}">        
+          <template is="dom-if" if="{{_hasColors(_selectedlayer)}}">
+            <iron-selector selected="{{_getLayerColor(internalstate.*,_selectedlayer)}}" class="layercolors">
+              <template is="dom-repeat" items="{{_getColors(_selectedlayer)}}" >
+                <div on-tap="selectcolor" class$="{{item}} coloritem" data-args$="{{index}}"></div>
+              </template>
+            </iron-selector>
           </template>
-          </div>
-          </template>
-        </iron-selector>
+          <div class="btns">
+            <locals-confirm on-cancel="_discard" on-confirm="_save" small></locals-confirm>           
+        </div>
       </template>
-      <template is="dom-if" if="{{_hasColors(_selectedlayer)}}">
-        <iron-selector selected="{{_getLayerColor(internalstate.*,_selectedlayer)}}" class="layercolors">
-          <template is="dom-repeat" items="{{_getColors(_selectedlayer)}}" >
-              <div on-tap="selectcolor" class$="{{item}} coloritem" data-args$="{{index}}"></div>
-          </template>
-        </iron-selector>
-      </template>
-
-      <div class="btns">
-
-    <locals-confirm on-cancel="_discard" on-confirm="_save" small>
-    </locals-confirm>
-
-<!--         <locals-button iconcolor="darkgrey" on-tap="_save" icon="v"></locals-button>
-        <locals-button iconcolor="darkgrey" on-tap="_discard" icon="decline"></locals-button> -->
-      </div>
-    </template>
-  </div>
-</iron-collapse> 
+    </div>
+  </iron-collapse>
 
 </div>
 </template>
@@ -317,15 +314,7 @@ Example:
         xlargeview: {
           type: Boolean,
           observer: '_sizeview'
-        },
-
-        statemod: {
-          type: Function,
-          value: function(){
-            console.log('Blah');
-          } 
         }
-
       },
 
       _getVariantTiles: function(state, index) {
@@ -336,12 +325,14 @@ Example:
         this.config.layers[index].variants.forEach(function(variant) {
           var tileindex = variant + '-' + color;
           tiles.push(self.config.layers[index].images[tileindex]);
-
         })
         return (tiles);
       },
 
-
+      _hasvariants: function(returnvalue){
+        console.log('Variants for layer ',this.config.layers[this._selectedlayer].name,this.config.layers[this._selectedlayer].variants.length);
+          return (this.config.layers[this._selectedlayer].variants && this.config.layers[this._selectedlayer].variants.length > 1) ? (returnvalue || true) : false;
+      },
 
       _getSelected: function(change, index) {
         return this.internalstate[index][0];
@@ -363,7 +354,6 @@ Example:
 
       // select a different layer
       selectlayer: function(e) {
-        console.log('select layer',e.target.dataset.args);
         this._selectedlayer = parseInt(e.target.dataset.args);
       },
 
@@ -378,8 +368,7 @@ Example:
         } else {
           this.set('internalstate.' + this._selectedlayer + '.0', this.internalstate[this._selectedlayer][0] - 1);
         }
-        this.internalstate = this.statemod(this.internalstate);
-
+        this.fire('internalstatechange',this.internalstate);
       },
 
       next: function() {
@@ -392,7 +381,7 @@ Example:
         } else {
           this.set('internalstate.' + this._selectedlayer + '.0', this.internalstate[this._selectedlayer][0] + 1);
         }
-        this.internalstate = this.statemod(this.internalstate);
+        this.fire('internalstatechange',this.internalstate);
       },
 
       _hasColors: function(layer) {
@@ -406,7 +395,7 @@ Example:
 
       selectcolor: function(e) {
         this.set('internalstate.' + this._selectedlayer + '.1', e.target.getAttribute('data-args'));
-        this.internalstate = this.statemod(this.internalstate);
+        this.fire('internalstatechange',this.internalstate);
       },
 
       _getLayerColor: function() {
@@ -427,7 +416,7 @@ Example:
 
       _is: function(a, b) {
         //console.log(a,'is',b,a == b);
-        return a == b;
+        return a == (b||true);
       },
 
       _toEdit: function() {
