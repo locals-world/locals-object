@@ -215,7 +215,6 @@ Example:
     <div class="arrowsandobject">
       <template is="dom-if" if="{{_is(mode,'edit')}}">
         <div class="objectarrows">
-          <template is="dom-if" if="{{_hasvariants()}}">ICH HEM VARIANTEN</template>
           <div class$="absolutepos editbtns {{_hasvariants('active')}}">
             <div class="editbtn left">
               <locals-icon iconcolor="darkgrey" on-tap="prev" icon="arrowleft"></locals-icon>
@@ -355,6 +354,7 @@ Example:
       // select a different layer
       selectlayer: function(e) {
         this._selectedlayer = parseInt(e.target.dataset.args);
+        console.log('selected layer',this._selectedlayer,typeof this._selectedlayer);
       },
 
       // select previous item in current layer, rolls around if you're at the beginning
@@ -415,8 +415,11 @@ Example:
       detached: function() {},
 
       _is: function(a, b) {
-        //console.log(a,'is',b,a == b);
-        return a == (b||true);
+        if (b === undefined){
+          b = true;
+        }
+        //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
+        return a === b;
       },
 
       _toEdit: function() {
