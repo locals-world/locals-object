@@ -58,7 +58,7 @@ Example:
 
   <template is="dom-if" if="{{!editmode}}">
     <div class="firstvalue" on-tap="_toEdit">
-    <h1>Benny</h1>
+    <h1>{{firstvalue}}</h1>
     </div>
   </template>
 
@@ -93,6 +93,9 @@ Example:
           type: Object,
           notify: true
         },
+        firstvalue: {
+          type: String,
+        }
       },
 
       _submit: function(event) {
@@ -100,8 +103,8 @@ Example:
       },
 
       _submitform: function(e) {
-//        console.log(e.detail);
         this.state = e.detail;
+        this._setFirstvalue();
         this._toView();
         this.fire('state-changed');
       },
@@ -144,6 +147,7 @@ Example:
         //     self.selected = 0;
         //   }
         // },1000)
+        this._setFirstvalue();
       },
 
       detached: function() {
@@ -151,6 +155,10 @@ Example:
         // removed from a document.
         //
         // Use this to clean up anything you did in `attached`.
+      },
+
+      _setFirstvalue: function(){
+            this.firstvalue =  this.state[this.config.fields[0].name];
       },
 
       _toEdit: function() {

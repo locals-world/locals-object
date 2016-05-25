@@ -318,6 +318,14 @@ Example:
           type: Boolean,
           observer: '_sizeview'
         },
+
+        statemod: {
+          type: Function,
+          value: function(){
+            console.log('Blah');
+          } 
+        }
+
       },
 
       _getVariantTiles: function(state, index) {
@@ -370,6 +378,8 @@ Example:
         } else {
           this.set('internalstate.' + this._selectedlayer + '.0', this.internalstate[this._selectedlayer][0] - 1);
         }
+        this.internalstate = this.statemod(this.internalstate);
+
       },
 
       next: function() {
@@ -382,6 +392,7 @@ Example:
         } else {
           this.set('internalstate.' + this._selectedlayer + '.0', this.internalstate[this._selectedlayer][0] + 1);
         }
+        this.internalstate = this.statemod(this.internalstate);
       },
 
       _hasColors: function(layer) {
@@ -395,6 +406,7 @@ Example:
 
       selectcolor: function(e) {
         this.set('internalstate.' + this._selectedlayer + '.1', e.target.getAttribute('data-args'));
+        this.internalstate = this.statemod(this.internalstate);
       },
 
       _getLayerColor: function() {
