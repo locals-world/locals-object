@@ -57,13 +57,14 @@ Example:
 
     </style>
 
-  <template is="dom-if" if="{{!editmode}}">
+  <template is="dom-if" if="{{_is(mode,'view')}}">
     <div class="firstvalue" on-tap="_toEdit">
     <h1>{{firstvalue}}</h1>
     </div>
+    <h2 on-tap="validate">V</h2>  
   </template>
 
-  <template is="dom-if" if="{{editmode}}">
+  <template is="dom-if" if="{{_is(mode,'edit')}}">
 
     <form is="iron-form" method="get" on-iron-form-submit="_submitform" action="/" id="basic">
       <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
@@ -75,6 +76,16 @@ Example:
       <div class="output"></div>
     </form>
 
+  </template>
+
+  <template is="dom-if" if="{{_is(mode,'validate')}}">
+    <h4>Ik wil deze data voor altijd vastleggen en iemand anders daar getuige van maken.</h4>
+    <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
+        <p name="{{item.name}}" label="{{item.label}}">{{_getValue(item.name,state)}}</p>
+
+      </template>
+       <locals-input label="Getuige code"></locals-input>
+       <locals-button raised on-tap="_request">Request</locals-button>
   </template>
 </template>
 
@@ -96,6 +107,10 @@ Example:
         },
         firstvalue: {
           type: String,
+        },
+        mode: {
+          type: String,
+          value: "view"
         }
       },
 
@@ -129,6 +144,7 @@ Example:
         //
         // This is the point where you should make modifications to the DOM (when
         // necessary), or kick off any processes the element wants to perform.
+        this.mode = 'view';
       },
 
       attached: function() {
@@ -163,11 +179,15 @@ Example:
       },
 
       _toEdit: function() {
-        this.editmode = true;
+        this.mode = 'edit';
       },
 
       _toView: function() {
-        this.editmode = false;
+        this.mode = 'view';
+      },
+
+      _toValidate: function() {
+        this.mode = 'validate';
       },
 
       _getFields: function() {
@@ -189,6 +209,19 @@ Example:
       _outanimation: function() {
         // console.log('Dit issem', this.outanimation);
       },
+
+      validate: function(){
+        this.mode = 'validate';
+        //this.fire('validate-request', this.state)
+      },
+
+      _is: function(a, b) {
+        if (b === undefined){
+          b = true;
+        }
+        //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
+        return a === b;
+      }
 
     });
   </script>
