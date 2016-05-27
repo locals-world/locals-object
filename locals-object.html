@@ -84,16 +84,21 @@ Example:
       }
 
       .editbtn {
-        width: 50%;
         height: 100%;
       }
 
+      .mid {
+        width: 50%;
+      }
+
       .left {
+        width: 25%;
         @apply(--layout-horizontal);
         @apply(--layout-center);
       }
 
       .right {
+        width: 25%;
         @apply(--layout-horizontal);
         @apply(--layout-center);
         @apply(--layout-end-justified);
@@ -110,9 +115,10 @@ Example:
       .layerselector {
         min-height: 110px;
         box-sizing: border-box;
-        padding: 0vh 0vh 5vh 0vh;        
+        padding: 5vh 0vh 5vh 0vh;      
         /*border-top: 1px dashed var(--locals-grey4);*/
-        border-bottom: 1px dashed var(--locals-grey4);
+        /*border-bottom: 1px dashed var(--locals-grey4);*/
+        background-color: var(--locals-grey2);
       }
 
 
@@ -219,6 +225,7 @@ Example:
             <div class="editbtn left">
               <locals-icon iconcolor="darkgrey" on-tap="prev" icon="arrowleft"></locals-icon>
             </div>
+            <div class="editbtn mid" on-tap="_save"></div>
             <div class="editbtn right">
               <locals-icon iconcolor="darkgrey" on-tap="next" icon="arrowright"></locals-icon>
             </div>
@@ -261,9 +268,9 @@ Example:
               </template>
             </iron-selector>
           </template>
-          <div class="btns">
+<!--           <div class="btns">
             <locals-confirm on-cancel="_discard" on-confirm="_save" small></locals-confirm>           
-        </div>
+        </div> -->
       </template>
     </div>
   </iron-collapse>
@@ -423,10 +430,11 @@ Example:
       },
 
       _toEdit: function() {
-        this.mode = "edit";
-        this._oldinternalstate = {};
-        this._oldinternalstate = this._clone(this.internalstate);
-        this.$.collapse.toggle();
+        console.log('to edit');
+        // this.mode = "edit";
+        // this._oldinternalstate = {};
+        // this._oldinternalstate = this._clone(this.internalstate);
+        // this.$.collapse.toggle();
       },
 
       _toView: function() {
@@ -434,9 +442,9 @@ Example:
       },
 
       _save: function() {
+        this.$.collapse.toggle();
         this.state = this._clone(this.internalstate);
         this._toView();
-        this.$.collapse.toggle();
       },
 
       _discard: function() {
