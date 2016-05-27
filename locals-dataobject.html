@@ -45,23 +45,48 @@ Example:
       h2 {
         @apply(--locals-font-h2);
       }
-      .firstvalue {
+      p {
+        @apply(--locals-font-body1);
+      }
+      small {
+        @apply(--locals-font-small);
+      }
+
+      .datapreview {
+        width: 100%;
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);
+      }
+      .firstvalpreview {
+        width: 100%;
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+      }
+      .firstvalpreview h1 {
+        font-size: 22px;
+      }
+      
+      .validspreview {
         width: 100%;
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
       }
 
-      .firstvalue h1 {
-        font-size: 22px;
-      }
+
 
     </style>
 
   <template is="dom-if" if="{{_is(mode,'view')}}">
-    <div class="firstvalue" on-tap="_toEdit">
+  <div class="datapreview">
+    <div class="firstvalpreview" on-tap="_toEdit">
     <h1>{{firstvalue}}</h1>
     </div>
-    <h2 on-tap="validate">V</h2>  
+    <div class="validspreview">
+    <locals-button icon="v" on-tap="validate" txtcolor="white" bg="grey4" small></locals-button>
+    <p>0</p>
+    </div>
+
+  </div>
   </template>
 
   <template is="dom-if" if="{{_is(mode,'edit')}}">
