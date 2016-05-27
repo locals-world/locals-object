@@ -12,7 +12,7 @@ LOCALS
 <link rel="import" href="../iron-form/iron-form.html">
 <link rel="import" href="../locals-input/locals-input.html">
 <link rel="import" href="../locals-style/locals-style.html">
-
+<link rel="import" href="../locals-confirm/locals-confirm.html">
 <link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-input/paper-input.html">
@@ -38,6 +38,7 @@ Example:
         display: block;
         box-sizing: border-box;
         color: black;
+        --valids-color: var(--locals-grey5);
       }
       h1 {
         @apply(--locals-font-h1);
@@ -52,52 +53,104 @@ Example:
         @apply(--locals-font-small);
       }
 
-      .datapreview {
+      .datavalids {
         width: 100%;
         @apply(--layout-vertical);
         @apply(--layout-center-center);
       }
-      .firstvalpreview {
-        width: 100%;
-        @apply(--layout-horizontal);
-        @apply(--layout-center-center);
+      .data {
+        width: 80%;
       }
-      .firstvalpreview h1 {
+      .data h1 {
         font-size: 22px;
+        margin: 0px;
       }
-      
-      .validspreview {
-        width: 100%;
+
+      .preview {
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
       }
 
+      .full {
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);
+
+      }
 
 
+
+
+      .valids {
+        box-sizing: border-box;
+/*        padding: 20px;*/
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+      }
+
+      .valids p {
+        font-size: 17px;
+
+        @apply(--opensans-bold);
+        color: var(--valids-color);
+        margin-right: 3px; 
+      }
+
+      .valids:hover { 
+        cursor: pointer;
+      }
+
+      locals-input {
+        margin: 0px 0px 20px 0px;
+      }
+      .btns {
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center); 
+        width: 100%;
+        padding-top: 20px;         
+      }
     </style>
 
   <template is="dom-if" if="{{_is(mode,'view')}}">
-  <div class="datapreview">
-    <div class="firstvalpreview" on-tap="_toEdit">
+  <div class="datavalids">
+    <div class="data preview" on-tap="_toEdit">
     <h1>{{firstvalue}}</h1>
     </div>
-    <div class="validspreview">
-    <locals-button icon="v" on-tap="validate" txtcolor="white" bg="grey4" small></locals-button>
-    <p>0</p>
+    <div class="valids" on-tap="validate">
+      <p>0</p>
+      <locals-icon icon="v" iconcolor="grey5" small></locals-icon>
     </div>
-
   </div>
   </template>
+
+
+<!--   <template is="dom-if" if="{{_is(mode,'view')}}">
+  <div class="datavalids">
+    <div class="data full" on-tap="_toEdit">
+    <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
+        <h1>{{_getValue(item.name,state)}}</h1>
+    </template>
+    </div>
+    <div class="valids" on-tap="validate">
+      <p>0</p>
+      <locals-icon icon="v" iconcolor="grey5" small></locals-icon>
+    </div>
+  </div>
+  </template> -->
+
+
 
   <template is="dom-if" if="{{_is(mode,'edit')}}">
 
     <form is="iron-form" method="get" on-iron-form-submit="_submitform" action="/" id="basic">
       <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
-        <locals-input name="{{item.name}}" label="{{item.label}}" inputvalue="{{_getValue(item.name,state)}}"></locals-input>
+        <locals-input center name="{{item.name}}" label="{{item.label}}" inputvalue="{{_getValue(item.name,state)}}"></locals-input>
       </template>
+      <div class="btns">
+            <locals-confirm on-cancel="_cancel" on-confirm="_submit" small></locals-confirm> 
+      </div>          
 
-      <locals-button raised on-tap="_submit">Submit</locals-button>
-      <locals-button raised on-tap="_cancel">Cancel</locals-button>
+<!--       <locals-button raised on-tap="_submit">Submit</locals-button>
+      <locals-button raised on-tap="_cancel">Cancel</locals-button> -->
       <div class="output"></div>
     </form>
 
