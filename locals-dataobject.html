@@ -17,6 +17,7 @@ LOCALS
 <link rel="import" href="../paper-button/paper-button.html">
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../locals-button/locals-button.html">
+<link rel="import" href="../locals-verification/locals-verification.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -109,8 +110,8 @@ Example:
         <p name="{{item.name}}" label="{{item.label}}">{{_getValue(item.name,state)}}</p>
 
       </template>
-       <locals-input label="Getuige code"></locals-input>
-       <locals-button raised on-tap="_request">Request</locals-button>
+      <locals-verification data="" pin=""></locals-verification> 
+
   </template>
 </template>
 
