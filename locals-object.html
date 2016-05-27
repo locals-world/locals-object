@@ -430,11 +430,11 @@ Example:
       },
 
       _toEdit: function() {
-        console.log('to edit');
-        // this.mode = "edit";
-        // this._oldinternalstate = {};
-        // this._oldinternalstate = this._clone(this.internalstate);
-        // this.$.collapse.toggle();
+        // console.log('to edit');
+        this.mode = "edit";
+        this._oldinternalstate = {};
+        this._oldinternalstate = this._clone(this.internalstate);
+        this.$.collapse.toggle();
       },
 
       _toView: function() {
