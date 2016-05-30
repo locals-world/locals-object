@@ -281,6 +281,10 @@ Example:
 <script>
     Polymer({
       is: 'locals-object',
+    listeners: {
+      'detail-tapped': 'viewchange'
+    },
+
       properties: {
         /**
          * `config` is the internal configuration and internalstate of the object
@@ -472,6 +476,10 @@ Example:
           this.customStyle['--objarrows-width'] = '370px';
           this.updateStyles();
         }
+      },
+
+      viewchange:function(){
+        console.log('ICH HEM A GEHOORD IN OBJECT *****!!!!!')
       }
 
     });
