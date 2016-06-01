@@ -217,8 +217,8 @@ Example:
   <iron-media-query query="(min-width:1281px)" query-matches="{{xlargeview}}"></iron-media-query>
 
   <div class="total">
-
     <div class="arrowsandobject">
+      <template is="dom-if" if="{{_is(renderstate,'open')}}">
       <template is="dom-if" if="{{_is(mode,'edit')}}">
         <div class="objectarrows">
           <div class$="absolutepos editbtns {{_hasvariants('active')}}">
@@ -232,7 +232,7 @@ Example:
           </div>
         </div>
       </template>
-
+      </template>
       <div class="objectcanvas">
         <template is="dom-repeat" items="{{config.layers}}" observe="state">
           <div class="absolutepos" on-tap="_toEdit">
@@ -243,6 +243,7 @@ Example:
     </div>
     <iron-collapse id="collapse">
       <div class="layerselector">
+      <template is="dom-if" if="{{_is(renderstate,'open')}}">
         <template is="dom-if" if="{{_is(mode,'edit')}}">
           <template is="dom-if" if="{{multilayer}}">
             <iron-selector selected="{{_selectedlayer}}" class="layeritems">
@@ -272,6 +273,7 @@ Example:
             <locals-confirm on-cancel="_discard" on-confirm="_save" small></locals-confirm>           
         </div> -->
       </template>
+    </template>
     </div>
   </iron-collapse>
 
@@ -303,6 +305,10 @@ Example:
         mode: {
           type: String,
           value: "view"
+        },
+
+        renderstate: {
+          type: String
         },
 
         _selectedlayer: {
@@ -340,7 +346,7 @@ Example:
       },
 
       _hasvariants: function(returnvalue){
-        console.log('Variants for layer ',this.config.layers[this._selectedlayer].name,this.config.layers[this._selectedlayer].variants.length);
+        // console.log('Variants for layer ',this.config.layers[this._selectedlayer].name,this.config.layers[this._selectedlayer].variants.length);
           return (this.config.layers[this._selectedlayer].variants && this.config.layers[this._selectedlayer].variants.length > 1) ? (returnvalue || true) : false;
       },
 
@@ -365,7 +371,7 @@ Example:
       // select a different layer
       selectlayer: function(e) {
         this._selectedlayer = parseInt(e.target.dataset.args);
-        console.log('selected layer',this._selectedlayer,typeof this._selectedlayer);
+        // console.log('selected layer',this._selectedlayer,typeof this._selectedlayer);
       },
 
       // select previous item in current layer, rolls around if you're at the beginning
@@ -479,7 +485,7 @@ Example:
       },
 
       viewchange:function(){
-        console.log('ICH HEM A GEHOORD IN OBJECT *****!!!!!')
+        // console.log('ICH HEM A GEHOORD IN OBJECT *****!!!!!')
       }
 
     });
