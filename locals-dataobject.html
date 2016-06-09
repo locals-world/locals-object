@@ -10,6 +10,7 @@ LOCALS
 <link rel="import" href="../neon-animation/neon-animation.html">
 <link rel="import" href="../iron-form/iron-form.html">
 <link rel="import" href="../iron-form/iron-form.html">
+<link rel="import" href="../iron-collapse/iron-collapse.html">
 <link rel="import" href="../locals-input/locals-input.html">
 <link rel="import" href="../locals-style/locals-style.html">
 <link rel="import" href="../locals-confirm/locals-confirm.html">
@@ -43,6 +44,9 @@ Example:
       }
       h1 {
         @apply(--locals-font-h1);
+        font-size: 22px;
+      line-height: 44px;
+        margin: 0px;
       }
       h2 {
         @apply(--locals-font-h2);
@@ -62,14 +66,43 @@ Example:
       .data {
         width: 80%;
       }
-      .data h1 {
+/*     h1 {
         font-size: 22px;
         margin: 0px;
       }
-
+*/
       .preview {
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
+      }
+
+      .togglevalue {
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);
+      }
+
+      #allvalues {
+        width: 100%;
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);
+      }
+
+      .tussenschot {
+        width: 70%;
+        max-width: 400px;
+        border: 0;
+        margin: 20px 0px 20px 0px;
+        color: var(--locals-grey3);
+        background-color: var(--locals-grey3);
+        height: 2px;
+      }
+
+      .dots {
+        color: var(--locals-grey5);
+        margin: -15px 0px 0px 0px;
+        font-size: 32px;
+        line-height: 28px;
+        @apply(--opensans-light);
       }
 
       .full {
@@ -86,6 +119,7 @@ Example:
 /*        padding: 20px;*/
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
+        margin-bottom: 20px;
       }
 
       .valids p {
@@ -109,9 +143,13 @@ Example:
         width: 100%;
         padding-top: 20px;         
       }
+
+      .editbtn {
+        margin: 20px 0px 20px 0px;
+      }
     </style>
 
-  <template is="dom-if" if="{{_is(mode,'view')}}">
+  <template is="dom-if" if="{{_is(mode,'preview')}}">
   <div class="datavalids">
     <div class="data preview" on-tap="_toEdit">
     <h1>{{firstvalue}}</h1>
@@ -122,6 +160,69 @@ Example:
     </div>
   </div>
   </template>
+
+
+  <template is="dom-if" if="{{_is(mode,'view')}}">
+  <div class="datavalids">
+  <template is="dom-if" if="{{collapseclosed}}">
+  <div class="data togglevalue" on-tap="toggle">
+    <h1>{{firstvalue}}</h1>
+  </div>
+  </template>
+  <iron-collapse id="allvalues"  on-tap="toggle">
+    <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
+      <h1 name="{{item.name}}" label="{{item.label}}">{{_getValue(item.name,state)}}</h1>
+    </template>
+  </iron-collapse>
+  <template is="dom-if" if="{{collapseclosed}}">
+  <h1 class="dots">...</h1>
+  </template>
+    <template is="dom-if" if="{{!collapseclosed}}">
+    <locals-button icon="edit" class="editbtn" on-tap="_toEdit"></locals-button>
+  </template>
+
+  <hr class="tussenschot">
+    <div class="valids" on-tap="validate">
+      <p>0</p>
+      <locals-icon icon="v" iconcolor="grey5" small ></locals-icon>
+    </div>
+
+<!--   <div class="datavalids"> -->
+<!--     <div class="data preview" on-tap="_toEdit">
+    <h1>{{firstvalue}}</h1>
+    </div> -->
+
+<!--   <iron-collapse id="allvalues">
+  <p>testest</p>
+    <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
+        <p name="{{item.name}}" label="{{item.label}}">{{_getValue(item.name,state)}}</p>
+
+      </template>
+</iron-collapse> -->
+
+<!--     <div class="valids" on-tap="validate">
+      <p>0</p>
+      <locals-icon icon="v" iconcolor="grey5" small></locals-icon>
+    </div> -->
+  </div>
+  </template>
+
+
+<!--   <template is="dom-if" if="{{_is(mode,'view')}}">
+  <div class="datavalids">
+    <div class="data full" on-tap="_toEdit">
+    <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
+        <h1>{{_getValue(item.name,state)}}</h1>
+    </template>
+    </div>
+    <div class="valids" on-tap="validate">
+      <p>0</p>
+      <locals-icon icon="v" iconcolor="grey5" small></locals-icon>
+    </div>
+  </div>
+  </template> -->
+
+
 
   <template is="dom-if" if="{{_is(mode,'edit')}}">
     <form is="iron-form" method="get" on-iron-form-submit="_submitform" action="/" id="basic">
@@ -137,9 +238,8 @@ Example:
   </template>
 
   <template is="dom-if" if="{{_is(mode,'validate')}}">
-    <h4>Ik wil deze data voor altijd vastleggen en iemand anders daar getuige van maken.</h4>
-    <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
-        <p name="{{item.name}}" label="{{item.label}}">{{_getValue(item.name,state)}}</p>
+<!--     <h4>Ik wil deze data voor altijd vastleggen en iemand anders daar getuige van maken.</h4> -->
+
 
       </template>
       <locals-verification objectdata="[[state]]" pin=""></locals-verification> 
@@ -167,9 +267,19 @@ Example:
           type: String,
         },
         mode: {
-          type: String,
-          value: "view"
+          type: String
+        },
+        collapseclosed: {
+          type: Boolean,
+          value: true
         }
+      },
+
+      toggle: function() {
+        var coll = document.querySelector('#allvalues');
+        coll.toggle();
+        this.collapseclosed=!this.collapseclosed;
+        console.log("IS DIE COLLAPSE EIG OPEN??????????",this.collapseclosed);
       },
 
       _submit: function(event) {
@@ -202,7 +312,6 @@ Example:
         //
         // This is the point where you should make modifications to the DOM (when
         // necessary), or kick off any processes the element wants to perform.
-        this.mode = 'view';
       },
 
       attached: function() {
@@ -230,6 +339,10 @@ Example:
         // removed from a document.
         //
         // Use this to clean up anything you did in `attached`.
+      },
+
+      toggleVals: function(){
+        this.$.collapse.toggle();
       },
 
       _setFirstvalue: function(){
@@ -280,6 +393,7 @@ Example:
         //console.log(a ,'(',typeof a,') is',b,'(',typeof b,') they are equal for ==',a == b,', they are equal for ===',a === b);
         return a === b;
       }
+
 
     });
   </script>
