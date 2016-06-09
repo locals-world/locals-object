@@ -175,6 +175,10 @@ Example:
         width: 32px;
         height: 32px;
       }
+      .coloritems {
+        width: 100%;
+        height: 25px;
+      }
 
       .coloritem {
         width: 25px;
@@ -209,6 +213,20 @@ Example:
         background-color: var(--locals-yellow);
       }
 
+      .editicon {
+
+        width: var(--obj-width);
+        height: var(--obj-height); 
+/*        width: 100%;
+        height: 100%; */
+        @apply(--layout-horizontal);
+        @apply(--layout-end-justified); 
+        @apply(--layout-end);
+        box-sizing: border-box;
+        padding: 20px;
+
+      }
+
 
     </style>
 
@@ -219,6 +237,9 @@ Example:
   <div class="total">
     <div class="arrowsandobject">
       <template is="dom-if" if="{{_is(renderstate,'open')}}">
+          <div class="absolutepos editicon" on-tap="_toEdit">
+            <locals-icon icon="view" small></locals-icon>
+          </div>
       <template is="dom-if" if="{{_is(mode,'edit')}}">
         <div class="objectarrows">
           <div class$="absolutepos editbtns {{_hasvariants('active')}}">
@@ -242,9 +263,11 @@ Example:
       </div>
     </div>
     <iron-collapse id="collapse">
-      <div class="layerselector">
       <template is="dom-if" if="{{_is(renderstate,'open')}}">
+      <div class="layerselector">
         <template is="dom-if" if="{{_is(mode,'edit')}}">
+
+
           <template is="dom-if" if="{{multilayer}}">
             <iron-selector selected="{{_selectedlayer}}" class="layeritems">
               <template is="dom-repeat" items="{{config.layers}}">
@@ -262,6 +285,8 @@ Example:
               </template>
             </iron-selector>
           </template>
+
+          <div>
           <template is="dom-if" if="{{_hasColors(_selectedlayer)}}">
             <iron-selector selected="{{_getLayerColor(internalstate.*,_selectedlayer)}}" class="layercolors">
               <template is="dom-repeat" items="{{_getColors(_selectedlayer)}}" >
@@ -269,12 +294,12 @@ Example:
               </template>
             </iron-selector>
           </template>
-<!--           <div class="btns">
-            <locals-confirm on-cancel="_discard" on-confirm="_save" small></locals-confirm>           
-        </div> -->
+          </div>
+
+        </template>
+      </div>
       </template>
-    </template>
-    </div>
+
   </iron-collapse>
 
 </div>
