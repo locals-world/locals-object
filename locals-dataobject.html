@@ -123,35 +123,14 @@ Example:
   </div>
   </template>
 
-
-<!--   <template is="dom-if" if="{{_is(mode,'view')}}">
-  <div class="datavalids">
-    <div class="data full" on-tap="_toEdit">
-    <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
-        <h1>{{_getValue(item.name,state)}}</h1>
-    </template>
-    </div>
-    <div class="valids" on-tap="validate">
-      <p>0</p>
-      <locals-icon icon="v" iconcolor="grey5" small></locals-icon>
-    </div>
-  </div>
-  </template> -->
-
-
-
   <template is="dom-if" if="{{_is(mode,'edit')}}">
-
     <form is="iron-form" method="get" on-iron-form-submit="_submitform" action="/" id="basic">
       <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
         <locals-input center name="{{item.name}}" label="{{item.label}}" inputvalue="{{_getValue(item.name,state)}}"></locals-input>
       </template>
       <div class="btns">
             <locals-confirm on-cancel="_cancel" on-confirm="_submit" small></locals-confirm> 
-      </div>          
-
-<!--       <locals-button raised on-tap="_submit">Submit</locals-button>
-      <locals-button raised on-tap="_cancel">Cancel</locals-button> -->
+      </div>
       <div class="output"></div>
     </form>
 
