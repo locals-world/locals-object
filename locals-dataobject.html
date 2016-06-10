@@ -40,11 +40,11 @@ Example:
         display: block;
         box-sizing: border-box;
         color: black;
-        --valids-color: var(--locals-grey5);
+        --valids-color: var(--locals-blue);
       }
       h1 {
         @apply(--locals-font-h1);
-        font-size: 22px;
+        font-size: 24px;
       line-height: 44px;
         margin: 0px;
       }
@@ -98,7 +98,7 @@ Example:
       }
 
       .dots {
-        color: var(--locals-grey5);
+        color: var(--locals-grey4);
         margin: -15px 0px 0px 0px;
         font-size: 32px;
         line-height: 28px;
@@ -119,15 +119,14 @@ Example:
 /*        padding: 20px;*/
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
-        margin-bottom: 20px;
+        margin: 10px 0px 20px 0px; 
       }
 
       .valids p {
-        font-size: 17px;
-
+        font-size: 14px;
         @apply(--opensans-bold);
         color: var(--valids-color);
-        margin-right: 3px; 
+        margin: 0px 5px 0px 0px; 
       }
 
       .valids:hover { 
@@ -155,16 +154,16 @@ Example:
     <h1>{{firstvalue}}</h1>
     </div>
     <div class="valids" on-tap="validate">
-      <p>0</p>
-      <locals-icon icon="v" iconcolor="grey5" small></locals-icon>
+      <p>18</p>
+      <locals-icon icon="v" iconcolor="blue" small></locals-icon>
     </div>
   </div>
   </template>
 
 
   <template is="dom-if" if="{{_is(mode,'view')}}">
-  <hr class="tussenschot">
   <div class="datavalids">
+  <hr class="tussenschot">
   <template is="dom-if" if="{{collapseclosed}}">
   <div class="data togglevalue" on-tap="toggle">
     <h1>{{firstvalue}}</h1>
@@ -182,10 +181,10 @@ Example:
     <locals-button icon="edit" class="editbtn" on-tap="_toEdit"></locals-button>
   </template>
   <hr class="tussenschot">
-  <div class="valids" on-tap="validate">
+<!--   <div class="valids" on-tap="validate">
     <p>0</p>
     <locals-icon icon="v" iconcolor="grey5" small ></locals-icon>
-  </div>
+  </div> -->
 
 <!--   <div class="datavalids"> -->
 <!--     <div class="data preview" on-tap="_toEdit">
@@ -279,7 +278,6 @@ Example:
         var coll = document.querySelector('#allvalues');
         coll.toggle();
         this.collapseclosed=!this.collapseclosed;
-        console.log("IS DIE COLLAPSE EIG OPEN??????????",this.collapseclosed);
       },
 
       _submit: function(event) {

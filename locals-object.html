@@ -58,7 +58,7 @@ Example:
 
       .objectcanvas {
         width: var(--obj-width);
-        height: var(--obj-height);  
+        height: var(--obj-height);
       }
 
       .objectarrows {
@@ -106,16 +106,17 @@ Example:
 
 
       locals-icon {
-        background-color: rgba(0,0,0,0.05);
+/*        background-color: rgba(0,0,0,0.05);
         border-radius: 50%;
         box-sizing: border-box;
-        padding: 10px;
+        padding: 10px;*/
       }
 
       .layerselector {
         min-height: 110px;
         box-sizing: border-box;
-        padding: 5vh 0vh 5vh 0vh;      
+        padding: 3vh 0vh 3vh 0vh;
+        margin-bottom: -20px;      
         /*border-top: 1px dashed var(--locals-grey4);*/
         /*border-bottom: 1px dashed var(--locals-grey4);*/
         background-color: var(--locals-grey2);
@@ -222,8 +223,8 @@ Example:
         @apply(--layout-horizontal);
         @apply(--layout-end-justified); 
         @apply(--layout-end);
-        box-sizing: border-box;
-        padding: 20px;
+/*        box-sizing: border-box;
+        padding: 2vw 0vw 0vw 2vw;*/
 
       }
 
@@ -237,9 +238,16 @@ Example:
   <div class="total">
     <div class="arrowsandobject">
       <template is="dom-if" if="{{_is(renderstate,'open')}}">
-          <div class="absolutepos editicon" on-tap="_toEdit">
-            <locals-icon icon="view" small></locals-icon>
-          </div>
+      <template is="dom-if" if="{{!_is(mode,'edit')}}">
+        <div class="absolutepos editicon" on-tap="_toEdit">
+        <template is="dom-if" if="{{phoneview}}">
+          <locals-icon icon="visualedit2" iconcolor="grey4"></locals-icon>
+        </template>
+        <template is="dom-if" if="{{!phoneview}}">
+          <locals-icon icon="visualedit2" iconcolor="grey4"></locals-icon>
+        </template>
+        </div>
+      </template>
       <template is="dom-if" if="{{_is(mode,'edit')}}">
         <div class="objectarrows">
           <div class$="absolutepos editbtns {{_hasvariants('active')}}">
