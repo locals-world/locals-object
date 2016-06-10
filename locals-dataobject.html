@@ -90,6 +90,10 @@ Example:
         color: var(--locals-grey7);
       }
 
+      .previewvalids {
+        margin-top: 10px;
+      }
+
       .togglevalue {
         @apply(--layout-vertical);
         @apply(--layout-center-center);
@@ -133,7 +137,7 @@ Example:
 /*        padding: 20px;*/
         @apply(--layout-horizontal);
         @apply(--layout-center-center);
-        margin: 0px 0px 20px 0px; 
+        margin-bottom:20px; 
       }
 
       .valids p {
@@ -171,7 +175,7 @@ Example:
     <div class="data preview" on-tap="_toEdit">
     <h1>{{firstvalue}}</h1>
     </div>
-    <div class="valids" on-tap="validate">
+    <div class="previewvalids valids" on-tap="validate">
 <!--       <p>18</p>
  -->      <locals-icon icon="v" iconcolor="blue" small></locals-icon>
     </div>
