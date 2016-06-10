@@ -40,6 +40,7 @@ Example:
         --obj-width:300px;
         --objarrows-width:350px;
         --obj-height:450px;
+        margin-bottom: 15px;      
 
       }
 
@@ -113,10 +114,9 @@ Example:
       }
 
       .layerselector {
-        min-height: 110px;
+        min-height: 200px;
         box-sizing: border-box;
-        padding: 3vh 0vh 3vh 0vh;
-        margin-bottom: -20px;      
+        padding: 5vh 0vh 5vh 0vh;
         /*border-top: 1px dashed var(--locals-grey4);*/
         /*border-bottom: 1px dashed var(--locals-grey4);*/
         background-color: var(--locals-grey2);
@@ -169,6 +169,7 @@ Example:
 
         @apply(--layout-wrap);
         width: 100%;
+        margin-top: 20px;
       }
 
       .layercolors .iron-selected {
@@ -237,7 +238,11 @@ Example:
 
   <div class="total">
     <div class="arrowsandobject">
+
+      <!-- ** Start of first OPEN state ** -->
       <template is="dom-if" if="{{_is(renderstate,'open')}}">
+
+      <!-- ** first OPEN // 1. visual-edit icon ** --> 
       <template is="dom-if" if="{{!_is(mode,'edit')}}">
         <div class="absolutepos editicon" on-tap="_toEdit">
         <template is="dom-if" if="{{phoneview}}">
@@ -248,6 +253,8 @@ Example:
         </template>
         </div>
       </template>
+
+      <!-- ** first OPEN // 2. edit-arrows ** -->
       <template is="dom-if" if="{{_is(mode,'edit')}}">
         <div class="objectarrows">
           <div class$="absolutepos editbtns {{_hasvariants('active')}}">
@@ -261,7 +268,14 @@ Example:
           </div>
         </div>
       </template>
+
+      <!-- ** End of first OPEN state ** -->
       </template>
+
+
+
+
+      <!-- ** ACTUAL VISUAL!! = 'objectlayer-repeater' ** -->
       <div class="objectcanvas">
         <template is="dom-repeat" items="{{config.layers}}" observe="state">
           <div class="absolutepos" on-tap="_toEdit">
@@ -269,13 +283,20 @@ Example:
           </div>
         </template>
       </div>
+
     </div>
+
+
+
+    <!-- ** Start of visualedit-menu ** -->
     <iron-collapse id="collapse">
+
+      <!-- ** Start of second OPEN state ** -->
       <template is="dom-if" if="{{_is(renderstate,'open')}}">
       <div class="layerselector">
         <template is="dom-if" if="{{_is(mode,'edit')}}">
 
-
+          <!-- ** second OPEN // 1. 'layer-items' = icons for choosing which visual you want to change ** -->
           <template is="dom-if" if="{{multilayer}}">
             <iron-selector selected="{{_selectedlayer}}" class="layeritems">
               <template is="dom-repeat" items="{{config.layers}}">
@@ -294,7 +315,7 @@ Example:
             </iron-selector>
           </template>
 
-          <div>
+          <!-- ** second OPEN // 2. 'coloritems' = colors of the items you are editing ** -->
           <template is="dom-if" if="{{_hasColors(_selectedlayer)}}">
             <iron-selector selected="{{_getLayerColor(internalstate.*,_selectedlayer)}}" class="layercolors">
               <template is="dom-repeat" items="{{_getColors(_selectedlayer)}}" >
@@ -302,7 +323,6 @@ Example:
               </template>
             </iron-selector>
           </template>
-          </div>
 
         </template>
       </div>
