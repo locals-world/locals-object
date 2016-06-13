@@ -324,6 +324,7 @@ Example:
       _submitform: function(e) {
         this.state = e.detail;
         this._setFirstvalue();
+        this._setHash();
         this._toView();
         this.fire('state-changed');
       },
@@ -383,6 +384,14 @@ Example:
       _setFirstvalue: function(){
             this.firstvalue =  this.state[this.config.fields[0].name];
       },
+
+      _setHash: function(){
+        var acc="";
+        this.config.fields.forEach(function(field){
+          acc += field.value;
+        });
+        console.log('acc=',acc);
+      }
 
       _toEdit: function() {
         this.mode = 'edit';
