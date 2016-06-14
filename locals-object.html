@@ -233,6 +233,9 @@ Example:
   <iron-media-query query="(min-width:601px) and (max-width: 1280px)" query-matches="{{desktopview}}"></iron-media-query>
   <iron-media-query query="(min-width:1281px)" query-matches="{{xlargeview}}"></iron-media-query>
 
+
+ <template is="dom-if" if="{{!_is(renderstate,'dataview')}}">
+
   <div class="total">
     <div class="arrowsandobject">
 
@@ -271,15 +274,16 @@ Example:
 
 
 
+     
+        <!-- ** ACTUAL VISUAL!! = 'objectlayer-repeater' ** -->
+        <div class="objectcanvas">
+          <template is="dom-repeat" items="{{config.layers}}" observe="state">
+            <div class="absolutepos" on-tap="_toEdit">
+              <locals-objectlayer images="[[_getVariantTiles(internalstate.*,index)]]" selected="[[_getSelected(internalstate.*,index)]]" editmode="[[_is(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
+            </div>
+          </template>
+        </div>
 
-      <!-- ** ACTUAL VISUAL!! = 'objectlayer-repeater' ** -->
-      <div class="objectcanvas">
-        <template is="dom-repeat" items="{{config.layers}}" observe="state">
-          <div class="absolutepos" on-tap="_toEdit">
-            <locals-objectlayer images="[[_getVariantTiles(internalstate.*,index)]]" selected="[[_getSelected(internalstate.*,index)]]" editmode="[[_is(mode,'edit')]]" inanimation="{{inanimation}}" outanimation="{{outanimation}}"></locals-objectlayer>
-          </div>
-        </template>
-      </div>
 
     </div>
 
@@ -325,9 +329,12 @@ Example:
       </div>
       </template>
 
+
+
   </iron-collapse>
 
 </div>
+  </template>
 </template>
 
 <script>

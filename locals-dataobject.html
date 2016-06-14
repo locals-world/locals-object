@@ -290,8 +290,9 @@ Example:
   </neon-animated-pages>
   </template>
 
-
-
+ <template is="dom-if" if="{{_is(renderstate,'dataview')}}">
+DAN DATAVIEW ZENNE
+  </template>
 
 
 <!--   <template is="dom-if" if="{{_is(mode,'edit')}}">
@@ -357,7 +358,8 @@ Example:
         },
         renderstate:{
           type: String,
-          observer: '_renderstate'
+          observer: '_renderstate',
+          value: 'closed'
         },
         phoneview: {
           type: Boolean,
@@ -390,7 +392,7 @@ Example:
       _submitform: function(e) {
         this.state = e.detail;
         this._setFirstvalue();
-        this._setHash();
+        //this._setHash();
         this._toView();
         this.fire('state-changed');
       },
@@ -464,12 +466,13 @@ Example:
             this.firstvalue =  this.state[this.config.fields[0].name];
       },
 
-      _setHash: function(){
-        var acc="";
+      hash: function(salt){
+        var acc=salt;
         this.config.fields.forEach(function(field){
-          acc += field.value;
-        });
+          acc += "|" + field.value;
+        });        
         console.log('acc=',acc);
+        return acc;
       },
 
       _toEdit: function() {
