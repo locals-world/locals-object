@@ -202,7 +202,7 @@ Example:
   <iron-media-query query="(min-width:1281px)" query-matches="{{xlargeview}}"></iron-media-query>
 
 
-  <template is="dom-if" if="{{_is(mode,'preview')}}">
+  <template is="dom-if" if="{{_is(renderstate,'closed')}}">
   <div class="datavalids">
     <div class="data preview" on-tap="_toEdit">
     <h1>{{firstvalue}}</h1>
@@ -214,8 +214,7 @@ Example:
   </template>
 
 
-  <template is="dom-if" if="{{!_is(mode,'preview')}}">
-
+  <template is="dom-if" if="{{_is(renderstate,'open')}}">
   <neon-animated-pages attr-for-selected="mode" selected="{{mode}}" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
   <neon-animatable mode="view">
     <div class="total">
@@ -280,7 +279,7 @@ Example:
     <div class="total">
       <div class="whitespace"></div>
         <hr class="tussenschot">
-        <locals-verification objectdata="[[state]]" pin="" on-cancel="_toView"></locals-verification> 
+          <locals-verification listening="{{verificationlistening}}" objectdata="[[state]]" pin="" on-cancel="_toView"></locals-verification>
         <hr class="tussenschot">
       <div class="valids">
         <p>22</p>
@@ -289,7 +288,6 @@ Example:
     </div>
   </neon-animatable>
   </neon-animated-pages>
-    <!-- <locals-verification objectdata="[[state]]" pin=""></locals-verification> --> 
   </template>
 
 
@@ -350,23 +348,25 @@ Example:
           type: String,
         },
         mode: {
-          type: String
+          type: String,
+          value: 'view'
         },
         collapseclosed: {
           type: Boolean,
           value: true
         },
-
+        renderstate:{
+          type: String,
+          observer: '_renderstate'
+        },
         phoneview: {
           type: Boolean,
           observer: '_sizeview'
         },
-
         desktopview: {
           type: Boolean,
           observer: '_sizeview'
         },
-
         xlargeview: {
           type: Boolean,
           observer: '_sizeview'
@@ -381,6 +381,10 @@ Example:
 
       _submit: function(event) {
         Polymer.dom(event).localTarget.parentElement.submit();
+      },
+
+      _renderstate: function(){
+
       },
 
       _submitform: function(e) {
@@ -410,6 +414,7 @@ Example:
         //
         // This is the point where you should make modifications to the DOM (when
         // necessary), or kick off any processes the element wants to perform.
+
       },
 
       attached: function() {
@@ -430,6 +435,17 @@ Example:
         //   }
         // },1000)
         this._setFirstvalue();
+
+        console.log('HELLO locals-dataobject - mode=',this.mode);
+
+
+        if (this.mode === "preview"){
+          this.verificationlistening = false;
+        }else{
+          this.verificationlistening = true;          
+        }
+
+
       },
 
       detached: function() {
@@ -453,7 +469,7 @@ Example:
           acc += field.value;
         });
         console.log('acc=',acc);
-      }
+      },
 
       _toEdit: function() {
         this.mode = 'edit';
