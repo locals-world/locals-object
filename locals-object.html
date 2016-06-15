@@ -501,7 +501,11 @@ Example:
         this.mode = "edit";
         this._oldinternalstate = {};
         this._oldinternalstate = this._clone(this.internalstate);
-        this.$.collapse.toggle();
+
+
+        var coll = document.querySelector('#collapse');
+        coll.toggle();
+
       },
 
       _toView: function() {
@@ -509,7 +513,9 @@ Example:
       },
 
       _save: function() {
-        this.$.collapse.toggle();
+        var coll = document.querySelector('#collapse');
+        coll.toggle();
+
         this.state = this._clone(this.internalstate);
         this._toView();
       },
@@ -517,7 +523,9 @@ Example:
       _discard: function() {
         this.set('internalstate',this._clone(this._oldinternalstate));
         this._toView();
-        this.$.collapse.toggle();
+        var coll = document.querySelector('#collapse');
+        coll.toggle();
+
       },
 
       _sizeview: function(){

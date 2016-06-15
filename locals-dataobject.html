@@ -291,7 +291,9 @@ Example:
   </template>
 
  <template is="dom-if" if="{{_is(renderstate,'dataview')}}">
-DAN DATAVIEW ZENNE
+    <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
+      <h1 name="{{item.name}}" label="{{item.label}}">{{_getValue(item.name,state)}}</h1>
+    </template>
   </template>
 
 
