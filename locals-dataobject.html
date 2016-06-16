@@ -221,7 +221,7 @@ Example:
   <neon-animatable mode="view">
     <div class="total">
       <div class="whitespace"></div>
-      <hr class="tussenschot">
+      <div class="tussenschot"></div>
       <div class="datavalids view">
         <template is="dom-if" if="{{collapseclosed}}">
           <div class="data togglevalue" on-tap="toggle">
@@ -248,7 +248,7 @@ Example:
         </div>
         </template>
       </div>
-      <hr class="tussenschot">
+      <div class="tussenschot"></div>
       <div class="valids">
         <p>{{nrvalidations}}</p>
         <locals-icon icon="v" iconcolor="blue" small></locals-icon>
@@ -258,19 +258,19 @@ Example:
   <neon-animatable mode="edit">
     <div class="total">
       <div class="whitespace"></div>
-      <hr class="tussenschot">
+      <div class="tussenschot"></div>
       <div class="datavalids edit">
         <form is="iron-form" method="get" on-iron-form-submit="_submitform" action="/" id="basic">
           <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
             <locals-input center name="{{item.name}}" label="{{item.label}}" inputvalue="{{_getValue(item.name,state)}}"></locals-input>
           </template>
           <div class="btns">
-            <locals-confirm on-cancel="_cancel" small type="formsubmit"></locals-confirm> 
+            <locals-confirm on-cancel="_cancel" type="formsubmit"></locals-confirm> 
           </div>
           <div class="output"></div>
         </form>
       </div>
-      <hr class="tussenschot">
+      <div class="tussenschot"></div>
       <div class="valids">
         <p>{{nrvalidations}}</p>
         <locals-icon icon="v" iconcolor="blue" small></locals-icon>
@@ -280,7 +280,10 @@ Example:
   <neon-animatable mode="validate">
     <div class="total">
       <div class="whitespace"></div>
-        <hr class="tussenschot">
+        <div class="tussenschot"></div>
+          <locals-verification listening="{{verificationlistening}}" objectdata="[[state]]" pin="" on-cancel="_toView"></locals-verification>
+        <div class="tussenschot"></div>
+
           <locals-verification listening="{{verificationlistening}}" objectdata="[[objectdata]]" pin="" on-cancel="_toView"></locals-verification>
         <hr class="tussenschot">
       <div class="valids">
@@ -301,7 +304,7 @@ Example:
 
 <!--   <template is="dom-if" if="{{_is(mode,'edit')}}">
     <div class="whitespace"></div>
-    <hr class="tussenschot">
+    <div class="tussenschot"></div>
     <div class="datavalids edit">
       <form is="iron-form" method="get" on-iron-form-submit="_submitform" action="/" id="basic">
         <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
