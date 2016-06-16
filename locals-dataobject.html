@@ -20,6 +20,8 @@ LOCALS
 <link rel="import" href="../paper-input/paper-input.html">
 <link rel="import" href="../locals-button/locals-button.html">
 <link rel="import" href="../locals-verification/locals-verification.html">
+<script type="text/javascript" src="bower_components/cryptojslib/rollups/sha3.js"></script>
+
 
 <!--
 An element providing a solution to no problem in particular.
@@ -248,7 +250,7 @@ Example:
       </div>
       <hr class="tussenschot">
       <div class="valids">
-        <p>22</p>
+        <p>{{nrvalidations}}</p>
         <locals-icon icon="v" iconcolor="blue" small></locals-icon>
       </div>
     </div>
@@ -270,7 +272,7 @@ Example:
       </div>
       <hr class="tussenschot">
       <div class="valids">
-        <p>22</p>
+        <p>{{nrvalidations}}</p>
         <locals-icon icon="v" iconcolor="blue" small></locals-icon>
       </div> 
     </div>
@@ -282,7 +284,7 @@ Example:
           <locals-verification listening="{{verificationlistening}}" objectdata="[[objectdata]]" pin="" on-cancel="_toView"></locals-verification>
         <hr class="tussenschot">
       <div class="valids">
-        <p>22</p>
+        <p>0{{nrvalidations}}V</p>
         <locals-icon icon="v" iconcolor="blue" small></locals-icon>
       </div> 
     </div>
@@ -380,6 +382,9 @@ Example:
         },
         hashfunction : {
           type: Function
+        },
+        nrvalidations: {
+          type: String
         }
       },
 
@@ -458,6 +463,9 @@ Example:
           this.verificationlistening = true;          
         }
 
+        setInterval(function() {
+          this._checkValidations();
+        }.bind(this), 5000);
        
 
       },
@@ -554,7 +562,57 @@ Example:
       //   }
       // },
 
- 
+    fixaddress: function(address) {
+      function strStartsWith(str, prefix) {
+        return str.indexOf(prefix) === 0;
+      }
+
+      if (!strStartsWith(address, '0x')) {
+        return ('0x' + address);
+      }
+      return address;
+    },
+
+    _checkValidations: function() {
+
+      this.web3wallet = document.querySelector('web3-wallet');
+      if (!this.web3wallet){
+        return;
+      }
+
+      this.contracturl = this.resolveUrl('../../contracts/localsTruth.json');
+      this.importHref(this.contracturl, function(e) {
+        this.contractjson = JSON.parse(e.target.import.body.innerText);
+
+        var MyContract = this.web3wallet.web3.eth.contract(this.contractjson.abi);
+        var myContractInstance = MyContract.at('0xdd9894fAc561dd07A2765B3985f7E4BfAe1dB636');
+
+
+        var acc = "";
+        var self = this;
+        Object.keys(this.objectdata.data).forEach(function(field) {
+          acc += "|" + self.objectdata.data[field];
+        });
+
+        var stringtohash = this.fixaddress(this.web3wallet.account) + acc;
+
+        var sha3 = CryptoJS.SHA3(stringtohash).toString(CryptoJS.enc.Hex);
+
+        this.nrvalidations = "" + myContractInstance.checkVeracity.call(sha3).toNumber();
+
+        if (!this.nrvalidations) {
+          this.nrvalidations = "0";
+        }
+        //this.nrvalidations++;
+
+
+      }.bind(this));
+
+    },
+
+
+
+      
 
      _sizeview: function(){
         if (this.phoneview) {
