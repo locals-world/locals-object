@@ -605,7 +605,7 @@ Example:
 
         this.nrvalidations = "" + myContractInstance.checkVeracity.call(sha3).toNumber();
         //this.nrvalidations = "" + myContractInstance.verificationthresh.call().toNumber();
-
+        this.fire('validations-update', {object: this.objectdata.component.name, number: this.nrvalidations});
 
 
         console.log('Adam heeft',this.nrvalidations);
