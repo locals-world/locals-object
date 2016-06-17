@@ -410,7 +410,7 @@ Example:
         this._setFirstvalue();
         //this._setHash();
         this._toView();
-        this.fire('state-changed');
+        this.fire('state-changed',e.detail.value);
       },
 
       _cancel: function(e) {
@@ -480,9 +480,9 @@ Example:
         // Use this to clean up anything you did in `attached`.
       },
 
-      toggleVals: function(){
-        this.$.collapse.toggle();
-      },
+      // toggleVals: function(){
+      //   this.$.collapse.toggle();
+      // },
 
       _setFirstvalue: function(){
             this.firstvalue =  this.state[this.config.fields[0].name];
