@@ -588,7 +588,7 @@ Example:
         this.contractjson = JSON.parse(e.target.import.body.innerText);
 
         var MyContract = this.web3wallet.web3.eth.contract(this.contractjson.abi);
-        var myContractInstance = MyContract.at('0xdd9894fAc561dd07A2765B3985f7E4BfAe1dB636');
+        var myContractInstance = MyContract.at('0xCd306cbC50A1b04353514c3b4Dcb30aFF4C54887');
 
 
         var acc = "";
@@ -601,7 +601,14 @@ Example:
 
         var sha3 = CryptoJS.SHA3(stringtohash).toString(CryptoJS.enc.Hex);
 
+//sha3 = 'adam';
+
         this.nrvalidations = "" + myContractInstance.checkVeracity.call(sha3).toNumber();
+        //this.nrvalidations = "" + myContractInstance.verificationthresh.call().toNumber();
+
+
+
+        console.log('Adam heeft',this.nrvalidations);
 
         if (!this.nrvalidations) {
           this.nrvalidations = "0";
