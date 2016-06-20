@@ -579,7 +579,7 @@ Example:
     _checkValidations: function() {
 
       this.web3wallet = document.querySelector('web3-wallet');
-      if (!this.web3wallet){
+      if (!this.web3wallet || !this.web3wallet.web3){
         return;
       }
       var self = this;
