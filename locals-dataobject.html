@@ -582,22 +582,21 @@ Example:
       if (!this.web3wallet){
         return;
       }
-
+      var self = this;
       this.contracturl = this.resolveUrl('../../contracts/localsTruth.json');
       this.importHref(this.contracturl, function(e) {
         this.contractjson = JSON.parse(e.target.import.body.innerText);
 
-        var MyContract = this.web3wallet.web3.eth.contract(this.contractjson.abi);
+        var MyContract = self.web3wallet.web3.eth.contract(self.contractjson.abi);
         var myContractInstance = MyContract.at('0xCd306cbC50A1b04353514c3b4Dcb30aFF4C54887');
 
 
         var acc = "";
-        var self = this;
-        Object.keys(this.objectdata.data).forEach(function(field) {
+        Object.keys(self.objectdata.data).forEach(function(field) {
           acc += "|" + self.objectdata.data[field];
         });
 
-        var stringtohash = this.fixaddress(this.web3wallet.account) + acc;
+        var stringtohash = self.fixaddress(this.web3wallet.account) + acc;
 
         var sha3 = CryptoJS.SHA3(stringtohash).toString(CryptoJS.enc.Hex);
 
@@ -605,18 +604,16 @@ Example:
 
         this.nrvalidations = "" + myContractInstance.checkVeracity.call(sha3).toNumber();
         //this.nrvalidations = "" + myContractInstance.verificationthresh.call().toNumber();
-        this.fire('validations-update', {object: this.objectdata.component.name, number: this.nrvalidations});
+        self.fire('validations-update', {object: self.objectdata.component.name, number: self.nrvalidations});
 
 
         console.log('Adam heeft',this.nrvalidations);
 
-        if (!this.nrvalidations) {
-          this.nrvalidations = "0";
+        if (!self.nrvalidations) {
+          self.nrvalidations = "0";
         }
-        //this.nrvalidations++;
 
-
-      }.bind(this));
+      });
 
     },
 
