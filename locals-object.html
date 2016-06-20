@@ -111,10 +111,10 @@ Example:
       }
 
       .layerselector {
-        min-height: 120px;
+        /*min-height: 120px;*/
         box-sizing: border-box;
-        padding: 2vh 0vh 2vh 0vh;
-        /*border-top: 1px dashed var(--locals-grey4);*/
+        /*padding: 2vh 0vh 2vh 0vh;
+      */  /*border-top: 1px dashed var(--locals-grey4);*/
         /*border-bottom: 1px dashed var(--locals-grey4);*/
         /*background-color: var(--locals-grey2);*/
       }
@@ -233,48 +233,42 @@ Example:
   <iron-media-query query="(min-width:601px) and (max-width: 1400px)" query-matches="{{desktopview}}"></iron-media-query>
   <iron-media-query query="(min-width:1401px)" query-matches="{{xlargeview}}"></iron-media-query>
 
+  <template is="dom-if" if="{{!_is(renderstate,'dataview')}}">
 
- <template is="dom-if" if="{{!_is(renderstate,'dataview')}}">
+    <div class="total">
+      <div class="arrowsandobject">
 
-  <div class="total">
-    <div class="arrowsandobject">
+        <!-- ** Start of first OPEN state ** -->
+        <template is="dom-if" if="{{_is(renderstate,'open')}}">
 
-      <!-- ** Start of first OPEN state ** -->
-      <template is="dom-if" if="{{_is(renderstate,'open')}}">
-
-      <!-- ** first OPEN // 1. visual-edit icon ** --> 
-      <template is="dom-if" if="{{!_is(mode,'edit')}}">
-        <div class="absolutepos editicon" on-tap="_toEdit">
-        <template is="dom-if" if="{{phoneview}}">
-          <locals-icon icon="visualedit2" iconcolor="grey4"></locals-icon>
-        </template>
-        <template is="dom-if" if="{{!phoneview}}">
-          <locals-icon icon="visualedit2" iconcolor="grey4"></locals-icon>
-        </template>
-        </div>
-      </template>
-
-      <!-- ** first OPEN // 2. edit-arrows ** -->
-      <template is="dom-if" if="{{_is(mode,'edit')}}">
-        <div class="objectarrows">
-          <div class$="absolutepos editbtns {{_hasvariants('active')}}">
-            <div class="editbtn left">
-              <locals-icon iconcolor="darkgrey" on-tap="prev" icon="arrowleft"></locals-icon>
+          <!-- ** first OPEN // 1. visual-edit icon ** -->
+          <template is="dom-if" if="{{!_is(mode,'edit')}}">
+            <div class="absolutepos editicon">
+              <template is="dom-if" if="{{phoneview}}">
+                <locals-icon icon="visualedit2" iconcolor="grey4"></locals-icon>
+              </template>
+              <template is="dom-if" if="{{!phoneview}}">
+                <locals-icon icon="visualedit2" iconcolor="grey4"></locals-icon>
+              </template>
             </div>
-            <div class="editbtn mid" on-tap="_save"></div>
-            <div class="editbtn right">
-              <locals-icon iconcolor="darkgrey" on-tap="next" icon="arrowright"></locals-icon>
+          </template>
+
+          <!-- ** first OPEN // 2. edit-arrows ** -->
+          <template is="dom-if" if="{{_is(mode,'edit')}}">
+            <div class="objectarrows">
+              <div class$="absolutepos editbtns {{_hasvariants('active')}}">
+                <div class="editbtn left">
+                  <locals-icon iconcolor="darkgrey" on-tap="prev" icon="arrowleft"></locals-icon>
+                </div>
+                <div class="editbtn mid" on-tap="_save"></div>
+                <div class="editbtn right">
+                  <locals-icon iconcolor="darkgrey" on-tap="next" icon="arrowright"></locals-icon>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </template>
+          </template>
+          <!-- ** End of first OPEN state ** --> </template>
 
-      <!-- ** End of first OPEN state ** -->
-      </template>
-
-
-
-     
         <!-- ** ACTUAL VISUAL!! = 'objectlayer-repeater' ** -->
         <div class="objectcanvas">
           <template is="dom-repeat" items="{{config.layers}}" observe="state">
@@ -284,56 +278,45 @@ Example:
           </template>
         </div>
 
-
-    </div>
-
-
-
-    <!-- ** Start of visualedit-menu ** -->
-    <iron-collapse id="collapse">
-
-      <!-- ** Start of second OPEN state ** -->
-      <template is="dom-if" if="{{_is(renderstate,'open')}}">
-      <div class="layerselector">
-        <template is="dom-if" if="{{_is(mode,'edit')}}">
-
-          <!-- ** second OPEN // 1. 'layer-items' = icons for choosing which visual you want to change ** -->
-          <template is="dom-if" if="{{multilayer}}">
-            <iron-selector selected="{{_selectedlayer}}" class="layeritems">
-              <template is="dom-repeat" items="{{config.layers}}">
-                <template is="dom-if" if="{{!_is(item.hidden)}}">
-                  <div class="layeritem" on-tap="selectlayer">
-                    <template is="dom-if" if="{{_is(_selectedlayer,index)}}">
-                      <img src="{{item.iconselected}}" data-args$="{{index}}"></template>
-                    <template is="dom-if" if="{{!_is(_selectedlayer,index)}}">
-                      <img src="{{item.icon}}" data-args$="{{index}}"></template>
-                  </div>
-                </template>
-                <template is="dom-if" if="{{_is(item.hidden)}}">
-                  <div></div>
-                </template>
-              </template>
-            </iron-selector>
-          </template>
-
-          <!-- ** second OPEN // 2. 'coloritems' = colors of the items you are editing ** -->
-          <template is="dom-if" if="{{_hasColors(_selectedlayer)}}">
-            <iron-selector selected="{{_getLayerColor(internalstate.*,_selectedlayer)}}" class="layercolors">
-              <template is="dom-repeat" items="{{_getColors(_selectedlayer)}}" >
-                <div on-tap="selectcolor" class$="{{item}} coloritem" data-args$="{{index}}"></div>
-              </template>
-            </iron-selector>
-          </template>
-
-        </template>
       </div>
-      </template>
 
-
-
-  </iron-collapse>
-
-</div>
+      <!-- ** Start of visualedit-menu ** -->
+      <!-- <iron-collapse id="visualedit"> -->
+        <!-- ** Start of second OPEN state ** -->
+        <template is="dom-if" if="{{_is(renderstate,'open')}}">
+          <div class="layerselector">
+            <template is="dom-if" if="{{_is(mode,'edit')}}">
+              <!-- ** second OPEN // 1. 'layer-items' = icons for choosing which visual you want to change ** -->
+              <template is="dom-if" if="{{multilayer}}">
+                <iron-selector selected="{{_selectedlayer}}" class="layeritems">
+                  <template is="dom-repeat" items="{{config.layers}}">
+                    <template is="dom-if" if="{{!_is(item.hidden)}}">
+                      <div class="layeritem" on-tap="selectlayer">
+                        <template is="dom-if" if="{{_is(_selectedlayer,index)}}">
+                          <img src="{{item.iconselected}}" data-args$="{{index}}"></template>
+                        <template is="dom-if" if="{{!_is(_selectedlayer,index)}}">
+                          <img src="{{item.icon}}" data-args$="{{index}}"></template>
+                      </div>
+                    </template>
+                    <template is="dom-if" if="{{_is(item.hidden)}}">
+                      <div></div>
+                    </template>
+                  </template>
+                </iron-selector>
+              </template>
+              <!-- ** second OPEN // 2. 'coloritems' = colors of the items you are editing ** -->
+              <template is="dom-if" if="{{_hasColors(_selectedlayer)}}">
+                <iron-selector selected="{{_getLayerColor(internalstate.*,_selectedlayer)}}" class="layercolors">
+                  <template is="dom-repeat" items="{{_getColors(_selectedlayer)}}" >
+                    <div on-tap="selectcolor" class$="{{item}} coloritem" data-args$="{{index}}"></div>
+                  </template>
+                </iron-selector>
+              </template>
+            </template>
+          </div>
+        </template>
+      <!-- </iron-collapse> -->
+    </div>
   </template>
 </template>
 
@@ -497,15 +480,16 @@ Example:
       },
 
       _toEdit: function() {
-        // console.log('to edit');
-        this.mode = "edit";
-        this._oldinternalstate = {};
-        this._oldinternalstate = this._clone(this.internalstate);
+        if (this.renderstate === "open"){
+          // console.log('to edit');
+          this.mode = "edit";
+          this._oldinternalstate = {};
+          this._oldinternalstate = this._clone(this.internalstate);
 
 
-        var coll = document.querySelector('#collapse');
-        coll.toggle();
-
+          // var coll = document.querySelector('#visualedit');
+          // coll.show();          
+        }
       },
 
       _toView: function() {
@@ -513,20 +497,21 @@ Example:
       },
 
       _save: function() {
-        var coll = document.querySelector('#collapse');
-        coll.toggle();
+        // var coll = document.querySelector('#visualedit');
+        // coll.hide();
 
         this.state = this._clone(this.internalstate);
         this._toView();
       },
 
-      _discard: function() {
-        this.set('internalstate',this._clone(this._oldinternalstate));
-        this._toView();
-        var coll = document.querySelector('#collapse');
-        coll.toggle();
+      // _discard: function() {
+      //   this.set('internalstate',this._clone(this._oldinternalstate));
+      //   this._toView();
 
-      },
+      //   var coll = document.querySelector('#collapse');
+      //   coll.hide();
+
+      // },
 
       _sizeview: function(){
         if (this.phoneview) {
