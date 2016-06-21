@@ -620,10 +620,9 @@ console.log('my hash=',sha3);
 
       this.nrvalidations = "" + myContractInstance.checkVeracity.call(sha3).toNumber();
       //this.nrvalidations = "" + myContractInstance.verificationthresh.call().toNumber();
-      // self.fire('validations-update', {
-      //   object: self.objectdata.component.name,
-      //   number: self.nrvalidations
-      // });
+      self.fire('validations-update', {
+         number: self.nrvalidations
+       });
 
 
       console.log('Adam heeft', this.nrvalidations);
