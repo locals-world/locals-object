@@ -95,6 +95,13 @@ Example:
 
       .previewvalids {
         margin-top: 10px;
+        width: 100%;
+          @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+      }
+      .previewvalids p {
+        color: var(--locals-blue);
+        @apply(--opensans-semibold);        
       }
 
       .togglevalue {
@@ -212,7 +219,8 @@ Example:
     <h1>{{firstvalue}}</h1>
     </div>
     <div class="previewvalids" on-tap="validate">
-      <locals-icon icon="v" iconcolor="blue" small></locals-icon>
+     <p>{{nrvalidations}}</p>
+      <locals-icon icon="v" iconcolor="blue" small>{{nrvalidations}}</locals-icon>
     </div>
   </div>
   </template>
@@ -253,7 +261,7 @@ Example:
       <div class="tussenschot"></div>
       <div class="valids">
         <p>{{nrvalidations}}</p>
-        <locals-icon icon="v" iconcolor="blue" small></locals-icon>
+        <locals-icon icon="v" iconcolor="blue" small>{{nrvalidations}}</locals-icon>
       </div>
     </div>
   </neon-animatable>
@@ -275,7 +283,7 @@ Example:
       <div class="tussenschot"></div>
       <div class="valids">
         <p>{{nrvalidations}}</p>
-        <locals-icon icon="v" iconcolor="blue" small></locals-icon>
+        <locals-icon icon="v" iconcolor="blue" small>{{nrvalidations}}</locals-icon>
       </div> 
     </div>
   </neon-animatable>
@@ -289,7 +297,7 @@ Example:
           <locals-verification listening="{{verificationlistening}}" objectdata="[[objectdata]]" pin="" on-cancel="_toView"></locals-verification>
         <hr class="tussenschot">
       <div class="valids">
-        <p>0{{nrvalidations}}V</p>
+        <p>{{nrvalidations}}</p>
         <locals-icon icon="v" iconcolor="blue" small></locals-icon>
       </div> 
     </div>
@@ -408,10 +416,13 @@ Example:
       },
 
       _submitform: function(e) {
+        //debugger;
         this.state = e.detail;
         this._setFirstvalue();
         //this._setHash();
         this._toView();
+
+        console.log('My hash is',this._myhash());
         this.fire('state-changed',e.detail.value);
       },
 
@@ -428,16 +439,11 @@ Example:
 
 
       ready: function() {
-
-        // `ready` is called after all elements have been configured, but
-        // propagates bottom-up. This element's children are ready, but parents
-        // are not.
-        //
-        // This is the point where you should make modifications to the DOM (when
-        // necessary), or kick off any processes the element wants to perform.
-        
-        //this.hashfunction = this.hash;
-
+        var self = this;
+        this.contracturl = this.resolveUrl('../../contracts/localsTruth.json');
+        this.importHref(this.contracturl, function(e) {
+          self.contractjson = JSON.parse(e.target.import.body.innerText);
+        });
       },
 
       attached: function() {
@@ -457,6 +463,11 @@ Example:
         //     self.selected = 0;
         //   }
         // },1000)
+
+        this.localstruthcontractaddress = new Polymer.IronMetaQuery({
+          key: 'localstruthcontractaddress'
+        }).value;
+
         this._setFirstvalue();
 
         console.log('HELLO locals-dataobject - mode=',this.mode);
@@ -468,9 +479,9 @@ Example:
           this.verificationlistening = true;          
         }
 
-        setInterval(function() {
-          this._checkValidations();
-        }.bind(this), 5000);
+        // setInterval(function() {
+        //   this._checkValidations();
+        // }.bind(this), 5000);
        
 
       },
@@ -578,48 +589,63 @@ Example:
       return address;
     },
 
-    _checkValidations: function() {
-
-      this.web3wallet = document.querySelector('web3-wallet');
-      if (!this.web3wallet || !this.web3wallet.web3){
-        return;
-      }
-      var self = this;
-      this.contracturl = this.resolveUrl('../../contracts/localsTruth.json');
-      this.importHref(this.contracturl, function(e) {
-        this.contractjson = JSON.parse(e.target.import.body.innerText);
-
-        var MyContract = self.web3wallet.web3.eth.contract(self.contractjson.abi);
-        var myContractInstance = MyContract.at('0xCd306cbC50A1b04353514c3b4Dcb30aFF4C54887');
-
-
+    _myhash: function(){
         var acc = "";
+        var self=this;
         Object.keys(self.objectdata.data).forEach(function(field) {
           acc += "|" + self.objectdata.data[field];
         });
 
         var stringtohash = self.fixaddress(this.web3wallet.account) + acc;
-
+console.log('my string=',stringtohash);
         var sha3 = CryptoJS.SHA3(stringtohash).toString(CryptoJS.enc.Hex);
-
-//sha3 = 'adam';
-
-        this.nrvalidations = "" + myContractInstance.checkVeracity.call(sha3).toNumber();
-        //this.nrvalidations = "" + myContractInstance.verificationthresh.call().toNumber();
-        self.fire('validations-update', {object: self.objectdata.component.name, number: self.nrvalidations});
-
-
-        console.log('Adam heeft',this.nrvalidations);
-
-        if (!self.nrvalidations) {
-          self.nrvalidations = "0";
-        }
-
-      });
-
+console.log('my hash=',sha3);
+        return sha3;
     },
 
+    getValidations: function(cb) {
 
+      this.web3wallet = document.querySelector('web3-wallet');
+      if (!this.web3wallet || !this.web3wallet.web3) {
+        return;
+      }
+      var self = this;
+
+      var MyContract = self.web3wallet.web3.eth.contract(self.contractjson.abi);
+      var myContractInstance = MyContract.at(this.localstruthcontractaddress);
+
+      var acc = "";
+      Object.keys(self.objectdata.data).forEach(function(field) {
+        acc += "|" + self.objectdata.data[field];
+      });
+
+      var stringtohash = self.fixaddress(this.web3wallet.account) + acc;
+      console.log('my string=', stringtohash);
+      var sha3 = CryptoJS.SHA3(stringtohash).toString(CryptoJS.enc.Hex);
+
+      console.log('my hash=', sha3);
+
+      //sha3 = 'adam';
+
+      this.nrvalidations = "" + myContractInstance.checkVeracity.call(sha3).toNumber();
+      //this.nrvalidations = "" + myContractInstance.verificationthresh.call().toNumber();
+      self.fire('validations-update', {
+         number: self.nrvalidations
+       });
+
+
+      console.log('Adam heeft', this.nrvalidations);
+
+      if (!self.nrvalidations) {
+        self.nrvalidations = "0";
+      }
+      if (cb) {
+        cb(null, self.nrvalidations);
+      }
+      return self.nrvalidations;
+
+
+    },
 
       
 
