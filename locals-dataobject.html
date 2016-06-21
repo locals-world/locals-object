@@ -93,6 +93,13 @@ Example:
 
       .previewvalids {
         margin-top: 10px;
+        width: 100%;
+          @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+      }
+      .previewvalids p {
+        color: var(--locals-blue);
+        @apply(--opensans-semibold);        
       }
 
       .togglevalue {
