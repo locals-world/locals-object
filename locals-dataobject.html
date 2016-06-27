@@ -207,10 +207,29 @@ Example:
          @apply(--layout-center-center);
       }
 
+      .initcanvas {
+         width: 100%;
+         @apply(--layout-vertical);
+         @apply(--layout-center-center);
+      }
+
+      .initcanvas p {
+        color:var(--locals-grey5);
+      }
+
     </style>
   <iron-media-query query="(min-width:0px) and (max-width: 600px)" query-matches="{{phoneview}}"></iron-media-query>
   <iron-media-query query="(min-width:601px) and (max-width: 1280px)" query-matches="{{desktopview}}"></iron-media-query>
   <iron-media-query query="(min-width:1281px)" query-matches="{{xlargeview}}"></iron-media-query>
+
+  <template is="dom-if" if="{{_is(renderstate,'init')}}">
+  <div class="initcanvas">
+    <template is="dom-repeat" items="{{_getFields(state,editmode)}}">
+      <p name="{{item.name}}" label="{{item.label}}">{{item.label}}</p>
+    </template>
+  </div>
+  </template>
+
 
 
   <template is="dom-if" if="{{_is(renderstate,'closed')}}">
