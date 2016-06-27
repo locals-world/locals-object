@@ -605,11 +605,16 @@ console.log('my hash=',sha3);
 
     getValidations: function(cb) {
 
+      var self = this;
+      if(!self.objectdata || !self.objectdata.data){
+        return;
+      }
+
       this.web3wallet = document.querySelector('web3-wallet');
       if (!this.web3wallet || !this.web3wallet.web3) {
         return;
       }
-      var self = this;
+      
 
       var MyContract = self.web3wallet.web3.eth.contract(self.contractjson.abi);
       var myContractInstance = MyContract.at(this.localstruthcontractaddress);
