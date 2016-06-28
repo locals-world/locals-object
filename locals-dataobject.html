@@ -48,10 +48,16 @@ Example:
         --view-title:24px;
         --view-lineheight:44px;
         --line-height2:28px; 
+        --closed-padding: 10px;
         --inner-padding: 20px 0px 20px 0px;
         background-color: white;
+        width: 100%;
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);
+
 
       }
+
       h1 {
         @apply(--locals-font-h1);
         font-size: var(--view-title);
@@ -75,8 +81,19 @@ Example:
         box-sizing: border-box;
         background-color: white;
       }
+
+      .datavalidsclosed {
+        width: 100%;
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        box-sizing: border-box;
+        padding: var(--closed-padding);
+        border-bottom: 1px dashed var(--locals-grey2);
+      }
+
+
       .data {
-        width: 80%;
+        @apply(--layout-flex);
       }
 
       .view {
@@ -90,18 +107,17 @@ Example:
       .preview h1 {
         font-size: var(--preview-title);
         color: var(--locals-grey7);
-        text-align: center;
       }
 
       .previewvalids {
-        margin-top: 10px;
-        width: 100%;
-          @apply(--layout-horizontal);
+        @apply(--layout-horizontal);
         @apply(--layout-center-center);
       }
       .previewvalids p {
         color: var(--locals-blue);
-        @apply(--opensans-semibold);        
+        @apply(--opensans-bold);
+        font-size: 14px;
+        margin-right: 4px;        
       }
 
       .togglevalue {
@@ -233,12 +249,13 @@ Example:
 
 
   <template is="dom-if" if="{{_is(renderstate,'closed')}}">
-  <div class="datavalids">
+  <div class="datavalidsclosed">
     <div class="data preview" on-tap="_toEdit">
     <h1>{{firstvalue}}</h1>
     </div>
     <div class="previewvalids" on-tap="validate">
-     <p>{{nrvalidations}}</p>
+     <!-- <p>{{nrvalidations}}</p> -->
+     <p>11</p>
       <locals-icon icon="v" iconcolor="blue" small>{{nrvalidations}}</locals-icon>
     </div>
   </div>
@@ -680,16 +697,20 @@ console.log('my hash=',sha3);
           this.customStyle['--view-lineheight'] = '34px';
           this.customStyle['--line-height2'] = '22px';
           this.customStyle['--inner-padding'] = '20px 0px 25px 0px';
+          this.customStyle['--closed-padding'] = '10px 5vw 10px 5vw';
           this.updateStyles();
         }
         if (this.desktopview) {
           this.customStyle['--preview-title'] = '20px';
           this.customStyle['--inner-padding'] = '30px 0px 35px 0px';
+          this.customStyle['--closed-padding'] = '25px 7vw 25px 7vw';
           this.updateStyles();
         }
         if (this.xlargeview) {
           this.customStyle['--preview-title'] = '22px';
           this.customStyle['--inner-padding'] = '30px 0px 35px 0px';
+          this.customStyle['--closed-padding'] = '40px 5vw 40px 5vw';
+
           this.updateStyles();
         }
       },
