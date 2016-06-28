@@ -57,6 +57,8 @@ Example:
       .objectcanvas {
         width: var(--obj-width);
         height: var(--obj-height);
+        /*border:1px solid blue;*/
+
       }
 
       .objectarrows {
@@ -72,6 +74,11 @@ Example:
       locals-objectlayer {
         width: var(--obj-width);
         height: var(--obj-height);  
+      }
+
+
+      locals-objectlayer img {
+        width: 100%; 
       }
 
       .editbtns {
@@ -517,8 +524,8 @@ Example:
 
       _sizeview: function(){
         if (this.phoneview) {
-          this.customStyle['--obj-width'] = '112px';
-          this.customStyle['--obj-height'] = '158px';
+          this.customStyle['--obj-width'] = '110px';
+          this.customStyle['--obj-height'] = '165px';
           this.customStyle['--objarrows-width'] = '160px';
           this.updateStyles();
         }
